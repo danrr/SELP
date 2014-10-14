@@ -45,5 +45,7 @@ I find myself to be very productive in Python, and I've used it for a variety of
 I want to keep the complexity of the front-end code to a minimum. Ideally, I would like to use it only for display, with the logic being performed by the back-end where possible. I'm not sure that having an MCV framework will be necessary, at least not at the start. I'm not sure if this is the best approach but if I find that my front-end code had grown to need it.
 
 
+###Other technical considerations
 
+For image uploading, I plan on using imgur.com through their free to use API (https://api.imgur.com/) with only links to the pictures being stored in my database.
 
