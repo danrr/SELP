@@ -49,3 +49,13 @@ I want to keep the complexity of the front-end code to a minimum. Ideally, I wou
 
 For image uploading, I plan on using imgur.com through their free to use API (https://api.imgur.com/) with only links to the pictures being stored in my database.
 
+Questions
+======
+
+1. Are the stages sensible divisions of work? Do you consider that the effort estimates are suitable?
+
+1. Do you consider sqlite a bad choice considering that it doesn't scale well at all? Is that still a major issue if I'm going to use it behind SQLAlchemy, which means that most of the code will not need to be changed while switching to a different DB implementation?
+
+1. Do you think this is reasonable, or would I be better off using Backbone from the start?
+
+1. On the whole, do you think the choice of technologies meshes well with the planned outcome?
