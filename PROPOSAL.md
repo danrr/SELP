@@ -1,10 +1,25 @@
-Idea
+Idea, for lack of a better one.
 =========
+
+Weekly cooking challenge website.
 
 ###Baseline###
 
+Website where user can sign up and receive cooking challenges ranked on a scale based on difficulty, number of ingredients, ease of getting ingredients. Users have a week to upload a photo of their cooking. Pictures can be up and down voted. A user receives credits based on the ranking of the challenge if they upload a picture of it, enough users vote on it, and they have a positive score. Users are ranked based on overall score.
+
+- Stage 1: Recipes can be displayed statically - 15 hours
+- Stage 1.5: Recipes can be displayed dynamically from DB - 5 hours
+- Stage 2: Users can sign up and sign in - 10 hours
+- Stage 3: Users can upload pictures - 10 hours
+- Stage 4: Users can vote - 10 hours
+- Stage 5: User can be ranked - 10 hours
+
+Tweaks, graphical improvements, bug fixes - 10 hours (maybe a bit optimistic)
+
 ###Stretch goals###
 
+- Add the ability for users to submit recipes for future competition for bonus points
+- Add the ability for users to create their own competitions.
 
 
 Technologies and Languages
