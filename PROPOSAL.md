@@ -53,7 +53,5 @@ Questions
 ======
 
 1. Are the stages sensible divisions of work? Do you consider that the effort estimates are suitable?
-
-1. Do you think this is reasonable, or would I be better off using Backbone from the start?
-
-1. On the whole, do you think the choice of technologies meshes well with the planned outcome?
+3. Do you think my assumption regarding the client-side code is valid, or would I be better off using Backbone from the start?
+4. On the whole, do you think the choice of technologies meshes well with the planned outcome?
