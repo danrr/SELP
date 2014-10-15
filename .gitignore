@@ -1,0 +1,4 @@
+env
+*.py[ocd]
+.idea
+README.html
