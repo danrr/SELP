@@ -5,6 +5,7 @@
     <title>{{title}}</title>
 </head>
 <body>
-Hello and welcome to my website.
+    {% include "partials/_login.html" %}
+    {% block content %}{% endblock %}
 </body>
 </html>
