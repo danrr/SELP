@@ -1,4 +1,7 @@
+itsdangerous==0.24
 Werkzeug==0.9.6
 MarkupSafe==0.23
 Jinja2==2.7.3
 Flask==0.10.1
+SQLAlchemy==0.9.8
+Flask-SQLAlchemy==2.0
