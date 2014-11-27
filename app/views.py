@@ -18,6 +18,7 @@ def home():
     context['posts'] = []
     for post in Post.query.order_by(Post.id.desc()).limit(5):
         context['posts'] += [{
+            'id': post.id,
             'title': post.title,
             'content': post.body
         }]
@@ -102,6 +103,15 @@ def new_post():
                            title='New post',
                            form=form)
 
+
+@app.route('/post/<int:id>', methods=['GET'])
+def post(id):
+    post = Post.query.filter_by(id=id).one()
+    author = User.query.filter_by(id=post.user_id).one()
+    return render_template('post.html',
+                           title=post.title,
+                           content=post.body,
+                           author=author.username)
 
 @login_manager.user_loader
 def load_user(id):
