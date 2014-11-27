@@ -1,6 +1,14 @@
-from flask import render_template, redirect, flash
-from app import app
+from flask import render_template, redirect, flash, g, url_for, session
+from app import app, login_manager, db
 from app.forms import LoginForm, RegistrationForm
+from app.models import User
+from flask.ext.login import login_user, current_user, logout_user
+from sqlalchemy import or_
+
+
+@app.before_request
+def before_request():
+    g.user = current_user
 
 
 @app.route("/", methods=["GET"])
@@ -39,10 +47,24 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if g.user is not None and g.user.is_authenticated():
+        return redirect(url_for('home'))
+
     form = LoginForm()
+
     if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None:
+            flash('No such user')
+            return redirect((url_for('register')))
+
+        if not user.check_password(form.password.data):
+            flash('Password is incorrect')
+            return redirect((url_for('login')))
+
+        login_user(user, remember=form.remember_me.data)
         flash('Welcome back, {user}'.format(user=form.username.data))
-        return redirect('/')
+        return redirect((url_for('home')))
     return render_template('login.html',
                            title='Sign In',
                            form=form)
@@ -52,8 +74,30 @@ def login():
 def register():
     form = RegistrationForm()
     if form.validate_on_submit():
+        old_user = User.query.filter_by(username=form.username.data).first()
+        if old_user is not None:
+            flash('User {user} already exists'.format(user=form.username.data))
+            return redirect((url_for('register')))
+        old_user = User.query.filter_by(email=form.email.data).first()
+        if old_user is not None:
+            flash('{email} already used'.format(email=form.email.data))
+            return redirect((url_for('register')))
+        user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
         flash('Welcome {user}'.format(user=form.username.data))
-        return redirect('/')
+        return redirect((url_for('home')))
     return render_template('register.html',
                            title='Register',
                            form=form)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
+
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
