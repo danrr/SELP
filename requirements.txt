@@ -5,4 +5,6 @@ Jinja2==2.7.3
 Flask==0.10.1
 SQLAlchemy==0.9.8
 Flask-SQLAlchemy==2.0
+WTForms==1.0.5
+Flask-WTF==0.10.3
 Flask-Login==0.2.11
