@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, redirect, flash
 from app import app
 from app.forms import LoginForm, RegistrationForm
 
@@ -40,6 +40,9 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        flash('Welcome back, {user}'.format(user=form.username.data))
+        return redirect('/')
     return render_template('login.html',
                            title='Sign In',
                            form=form)
@@ -48,6 +51,9 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
+    if form.validate_on_submit():
+        flash('Welcome {user}'.format(user=form.username.data))
+        return redirect('/')
     return render_template('register.html',
                            title='Register',
                            form=form)
