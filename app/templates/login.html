@@ -1,18 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Sign In</h1>
-  <form action="" method="post" name="login">
-      {{ form.hidden_tag() }}
-      <div>
-          {{ form.username.label }}
-          {{ form.username(size=80) }}
-      </div>
-      <div>
-          {{ form.password.label }}
-          {{ form.password(size=80) }}
-      </div>
-      <div>{{ form.remember_me }} {{ form.remember_me.label }}</div>
-      <input type="submit" value="Sign In">
-  </form>
+    <h1>Sign In</h1>
+    <form action="" method="post" name="login">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.username.label }}
+            {{ form.username(size=80) }}
+            {% if form.username.errors %}
+                <ul class="errors">
+                    {% for error in form.username.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        <div>
+            {{ form.password.label }}
+            {{ form.password(size=80) }}
+            {% if form.password.errors %}
+                 <ul class="errors">
+                     {% for error in form.password.errors %}
+                         <li>{{ error }}</li>
+                     {% endfor %}
+                 </ul>
+            {% endif %}
+        </div>
+        <div>{{ form.remember_me }} {{ form.remember_me.label }}</div>
+        <input type="submit" value="Sign In">
+    </form>
 {% endblock %}
