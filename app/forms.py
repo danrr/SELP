@@ -1,6 +1,6 @@
 from flask.ext.wtf import Form
-from wtforms import StringField, BooleanField, PasswordField
-from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms import StringField, BooleanField, PasswordField, DateField, TextAreaField
+from wtforms.validators import DataRequired, Email, EqualTo, Optional
 
 
 class LoginForm(Form):
@@ -14,3 +14,9 @@ class RegistrationForm(Form):
     email = StringField('Email:', validators=[DataRequired(), Email()])
     password = PasswordField('Password:', validators=[DataRequired()])
     confirm = PasswordField('Confirm password:', validators=[EqualTo('password')])
+
+
+class PostForm(Form):
+    title = StringField('Title:', validators=[DataRequired()])
+    body = TextAreaField('Body:', validators=[DataRequired()])
+    date = DateField('Start date: (if not now)', validators=[Optional()])

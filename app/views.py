@@ -1,7 +1,7 @@
 from flask import render_template, redirect, flash, g, url_for
 from app import app, login_manager, db
-from app.forms import LoginForm, RegistrationForm
-from app.models import User
+from app.forms import LoginForm, RegistrationForm, PostForm
+from app.models import User, Post
 from flask.ext.login import login_user, current_user, logout_user, login_required
 
 
@@ -106,6 +106,21 @@ def user(username):
         flash('User {username} not found.'.format(username))
         return redirect(url_for('home'))
     return redirect(url_for('home'))
+
+
+@app.route('/post/new', methods=['GET', 'POST'])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        # TODO: deal with date
+        post = Post(form.title.data, form.body.data, g.user.id)
+        db.session.add(post)
+        db.session.commit()
+        return redirect((url_for('home')))
+    return render_template('new-post.html',
+                           title='New post',
+                           form=form)
 
 
 @login_manager.user_loader

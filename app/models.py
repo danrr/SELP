@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from app import db
 from werkzeug.security import check_password_hash, generate_password_hash
 
