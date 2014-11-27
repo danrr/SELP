@@ -1,7 +1,7 @@
 <div class="login">
     {%if g.user.is_authenticated() %}
-        <a href="/user/{{ g.user.username|lower }}">Hello, {{ g.user.username }}!</a> <a href="/logout">Logout</a>
+        <a href="{{ url_for('user', username=g.user.username) }}">Hello, {{ g.user.username }}!</a> <a href="{{ url_for('logout') }}">Logout</a>
     {% else %}
-        Hello newcomer <a href="/login">Login</a> <a href="/register">Register</a>
+        Hello newcomer <a href="{{ url_for('login') }}">Login</a> <a href="{{ url_for('register') }}">Register</a>
     {% endif %}
 </div>
