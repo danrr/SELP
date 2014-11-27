@@ -98,6 +98,16 @@ def logout():
     return redirect(url_for('home'))
 
 
+@app.route('/user/<username>')
+@login_required
+def user(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('User {username} not found.'.format(username))
+        return redirect(url_for('home'))
+    return redirect(url_for('home'))
+
+
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
