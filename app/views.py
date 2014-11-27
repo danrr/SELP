@@ -1,9 +1,9 @@
-from flask import render_template, redirect, flash, g, url_for, session
+from flask import render_template, redirect, flash, g, url_for
 from app import app, login_manager, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
-from flask.ext.login import login_user, current_user, logout_user
-from sqlalchemy import or_
+from flask.ext.login import login_user, current_user, logout_user, login_required
+
 
 
 @app.before_request
