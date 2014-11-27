@@ -1,6 +1,6 @@
 <div class="login">
-    {%if username %}
-        <a href="/user/{{ username }}">Hello, {{ username }}!</a> <a href="/logout">Logout</a>
+    {%if g.user.is_authenticated() %}
+        <a href="/user/{{ g.user.username|lower }}">Hello, {{ g.user.username }}!</a> <a href="/logout">Logout</a>
     {% else %}
         Hello newcomer <a href="/login">Login</a> <a href="/register">Register</a>
     {% endif %}
