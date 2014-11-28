@@ -79,14 +79,26 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route('/user/<username>')
+@app.route('/user/<username>/')
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first()
+
     if user is None:
-        flash('User {username} not found.'.format(username))
+        flash('User {username} not found.'.format(username=username))
         return redirect(url_for('home'))
-    return redirect(url_for('home'))
+
+    context = {}
+    context['title'] = 'Cooking challenge'
+    context['posts'] = []
+    for post in user.posts:
+        context['posts'] += [{
+            'id': post.id,
+            'title': post.title,
+            'content': post.body
+        }]
+
+    return render_template('userpage.html', **context)
 
 
 @app.route('/post/new', methods=['GET', 'POST'])
