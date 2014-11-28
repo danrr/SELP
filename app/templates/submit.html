@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{title}}</h1>
+    <form action="" method="post" name="submit" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.image.label }}
+            {{ form.image() }}
+            {% if form.image.errors %}
+                 <ul class="errors">
+                     {% for error in form.image.errors %}
+                         <li>{{ error }}</li>
+                     {% endfor %}
+                 </ul>
+            {% endif %}
+        </div>
+        <div>
+            {{ form.body.label }}
+            {{ form.body(rows=10,cols=100) }}
+            {% if form.body.errors %}
+                 <ul class="errors">
+                     {% for error in form.body.errors %}
+                         <li>{{ error }}</li>
+                     {% endfor %}
+                 </ul>
+            {% endif %}
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}

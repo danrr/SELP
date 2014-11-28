@@ -1,4 +1,5 @@
 from flask.ext.wtf import Form
+from flask.ext.wtf.file import FileRequired, FileAllowed, FileField
 from wtforms import StringField, BooleanField, PasswordField, DateField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo, Optional
 
@@ -20,3 +21,11 @@ class PostForm(Form):
     title = StringField('Title:', validators=[DataRequired()])
     body = TextAreaField('Body:', validators=[DataRequired()])
     date = DateField('Start date: (if not now)', validators=[Optional()])
+
+
+class SubmissionForm(Form):
+    body = TextAreaField('Body:', validators=[DataRequired()])
+    image = FileField('Image:') #, validators=[
+    #     FileRequired(),
+    #     FileAllowed(['jpg', 'png'], 'Images only!')
+    # ])

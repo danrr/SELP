@@ -1,8 +1,9 @@
 from flask import render_template, redirect, flash, g, url_for, request
 from app import app, login_manager, db
-from app.forms import LoginForm, RegistrationForm, PostForm
-from app.models import User, Post
+from app.forms import LoginForm, RegistrationForm, PostForm, SubmissionForm
+from app.models import User, Post, Submission
 from flask.ext.login import login_user, current_user, logout_user, login_required
+from werkzeug.utils import secure_filename
 
 
 @app.before_request
@@ -16,7 +17,10 @@ def home():
         'title': 'Cooking challenge',
         'posts': []
     }
+
+    print Post.query.order_by(Post.id.desc()).limit(5)
     for post in Post.query.order_by(Post.id.desc()).limit(5):
+        print post
         context['posts'] += [{
             'id': post.id,
             'title': post.title,
@@ -144,6 +148,16 @@ def post(id):
             db.session.delete(post)
             db.session.commit()
             return redirect(url_for('home'))
+    else:
+        if request.args.get('submit', '') == 't':
+            form = SubmissionForm()
+            if form.validate_on_submit():
+                path = 'uploads/' + secure_filename(form.image.data.filename)
+                form.image.data.save(path)
+                text = form.body.data
+            return render_template('submit.html',
+                                   title='Submit entry',
+                                   form=form)
 
     can_edit = False
     if g.user is not None and g.user.is_authenticated() and g.user.id == author.id:
@@ -154,6 +168,8 @@ def post(id):
                            author=author.username,
                            can_edit=can_edit,
                            post_id=post.id)
+
+
 
 @login_manager.user_loader
 def load_user(id):
