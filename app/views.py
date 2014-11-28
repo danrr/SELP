@@ -90,6 +90,8 @@ def user(username):
 
     context = {}
     context['title'] = 'Cooking challenge'
+    context['rank'] = user.get_rank()
+    context['score'] = user.score
     context['posts'] = []
     for post in user.posts:
         context['posts'] += [{

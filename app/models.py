@@ -8,6 +8,7 @@ class User(db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(120))
+    score = db.Column(db.Integer, default=0)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
 
     def __init__(self, username, email, password):
@@ -29,6 +30,12 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def increase_score(self, score):
+        self.score += score
+
+    def get_rank(self):
+        return self.__class__.query.filter(self.__class__.score > self.score).count() + 1
 
     def __repr__(self):
         return '<User {username}>'.format(username=self.username)

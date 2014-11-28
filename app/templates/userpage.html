@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
     <h1>{{ g.user.username }}'s userpage</h1>
+    <div class="ranking">
+        <span class="rank">
+            Rank: {{ rank }}
+        </span>
+        <span class="score">
+            Score: {{ score }}
+        </span>
+    </div>
     {% for post in posts %}
         <div class="post">
             <h2>
