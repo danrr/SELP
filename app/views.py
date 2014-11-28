@@ -12,9 +12,10 @@ def before_request():
 
 @app.route("/", methods=["GET"])
 def home():
-    context = {}
-    context['title'] = 'Cooking challenge'
-    context['posts'] = []
+    context = {
+        'title': 'Cooking challenge',
+        'posts': []
+    }
     for post in Post.query.order_by(Post.id.desc()).limit(5):
         context['posts'] += [{
             'id': post.id,
@@ -87,11 +88,12 @@ def user(username):
         flash('User {username} not found.'.format(username=username))
         return redirect(url_for('home'))
 
-    context = {}
-    context['title'] = 'Cooking challenge'
-    context['rank'] = user.get_rank()
-    context['score'] = user.score
-    context['posts'] = []
+    context = {
+        'title': 'Cooking challenge',
+        'rank': user.get_rank(),
+        'score': user.score,
+        'posts': []
+    }
     for post in user.posts:
         context['posts'] += [{
             'id': post.id,
