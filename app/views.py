@@ -5,7 +5,6 @@ from app.models import User, Post
 from flask.ext.login import login_user, current_user, logout_user, login_required
 
 
-
 @app.before_request
 def before_request():
     g.user = current_user
@@ -143,7 +142,7 @@ def post(id):
             db.session.delete(post)
             db.session.commit()
             return redirect(url_for('home'))
-        
+
     can_edit = False
     if g.user is not None and g.user.is_authenticated() and g.user.id == author.id:
         can_edit = True
