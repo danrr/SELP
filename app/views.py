@@ -104,10 +104,24 @@ def new_post():
                            form=form)
 
 
-@app.route('/post/<int:id>/', methods=['GET'])
+@app.route('/post/<int:id>/', methods=['GET', 'POST'])
 def post(id):
     post = Post.query.filter_by(id=id).one()
     author = User.query.filter_by(id=post.user_id).one()
+    if request.args.get('edit', '') == 't':
+        form = PostForm()
+
+        if form.validate_on_submit():
+            post.title = form.title.data
+            post.body = form.body.data
+            db.session.commit()
+            return redirect(url_for('post', id=id))
+        
+        form.title.data = post.title
+        form.body.data = post.body
+        return render_template('new-post.html',
+                               title='Edit post',
+                               form=form)
 
     if request.args.get('delete', '') == 't':
         db.session.delete(post)
