@@ -25,7 +25,6 @@ class PostForm(Form):
 
 class SubmissionForm(Form):
     body = TextAreaField('Body:', validators=[DataRequired()])
-    image = FileField('Image:') #, validators=[
-    #     FileRequired(),
-    #     FileAllowed(['jpg', 'png'], 'Images only!')
-    # ])
+    image = FileField('Image:', validators=[
+        FileRequired(),
+    ])

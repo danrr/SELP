@@ -1,5 +1,7 @@
 from datetime import datetime
 from app import db
+from config import imgur_client_id, imgur_client_secret
+from imgurpython import ImgurClient
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -10,6 +12,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(120))
     score = db.Column(db.Integer, default=0)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    submissions = db.relationship('Submission', backref='submitter', lazy='dynamic')
 
     def __init__(self, username, email, password):
         self.username = username
@@ -47,6 +50,7 @@ class Post(db.Model):
     body = db.Column(db.Text)
     publish_time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    submissions = db.relationship('Submission', backref='post', lazy='dynamic')
 
     def __init__(self, title, body, user_id, publish_time=None):
         self.title = title
@@ -58,3 +62,18 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post {title}>'.format(title=self.title)
+
+
+class Submission(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    url = db.Column(db.String(100))
+    text = db.Column(db.Text)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+
+    def __init__(self, path, text, user_id, post_id):
+        client = ImgurClient(imgur_client_id, imgur_client_secret)
+        self.url = 'http://i.imgur.com/Sj6yA9J.jpg'#client.upload_from_path(path, config=None, anon=True)['link']
+        self.user_id = user_id
+        self.post_id = post_id
+        self.text = text

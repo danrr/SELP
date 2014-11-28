@@ -3,6 +3,7 @@ from app import app, login_manager, db
 from app.forms import LoginForm, RegistrationForm, PostForm, SubmissionForm
 from app.models import User, Post, Submission
 from flask.ext.login import login_user, current_user, logout_user, login_required
+import os
 from werkzeug.utils import secure_filename
 
 
@@ -152,9 +153,20 @@ def post(id):
         if request.args.get('submit', '') == 't':
             form = SubmissionForm()
             if form.validate_on_submit():
+                if Submission.query.filter_by(user_id=g.user.id, post_id=id).all() is not None:
+                    flash("Submission already exists")
+                    return redirect(url_for('post', id=id))
+
                 path = 'uploads/' + secure_filename(form.image.data.filename)
                 form.image.data.save(path)
                 text = form.body.data
+                submission = Submission(path, text, id, g.user.id)
+                db.session.add(submission)
+                db.session.commit()
+                os.remove(path)
+                flash("Submission successful")
+                return redirect(url_for('post', id=id))
+
             return render_template('submit.html',
                                    title='Submit entry',
                                    form=form)
