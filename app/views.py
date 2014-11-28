@@ -1,4 +1,4 @@
-from flask import render_template, redirect, flash, g, url_for
+from flask import render_template, redirect, flash, g, url_for, request
 from app import app, login_manager, db
 from app.forms import LoginForm, RegistrationForm, PostForm
 from app.models import User, Post
@@ -104,14 +104,24 @@ def new_post():
                            form=form)
 
 
-@app.route('/post/<int:id>', methods=['GET'])
+@app.route('/post/<int:id>/', methods=['GET'])
 def post(id):
     post = Post.query.filter_by(id=id).one()
     author = User.query.filter_by(id=post.user_id).one()
+
+    if request.args.get('delete', '') == 't':
+        db.session.delete(post)
+        db.session.commit()
+        return redirect(url_for('home'))
+    can_edit = False
+    if g.user is not None and g.user.is_authenticated() and g.user.id == author.id:
+        can_edit = True
     return render_template('post.html',
                            title=post.title,
                            content=post.body,
-                           author=author.username)
+                           author=author.username,
+                           can_edit=can_edit,
+                           post_id=post.id)
 
 @login_manager.user_loader
 def load_user(id):

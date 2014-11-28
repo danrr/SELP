@@ -3,8 +3,16 @@
     <h2>{{ title }}</h2>
         <div class="post">
             <div class="author">
-                {{ author }}
+                <span>
+                    {{ author }}
+                </span>
+                {% if can_edit %}
+                    <span>
+                        <a href="?delete=t">Delete</a>
+                    </span>
+                {% endif %}
             </div>
+
             <div class="post-content">
                 {{ content }}
             </div>
