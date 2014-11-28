@@ -122,25 +122,28 @@ def new_post():
 def post(id):
     post = Post.query.filter_by(id=id).one()
     author = User.query.filter_by(id=post.user_id).one()
-    if request.args.get('edit', '') == 't':
-        form = PostForm()
 
-        if form.validate_on_submit():
-            post.title = form.title.data
-            post.body = form.body.data
+    if author.id == g.user.id:
+        if request.args.get('edit', '') == 't':
+            form = PostForm()
+
+            if form.validate_on_submit():
+                post.title = form.title.data
+                post.body = form.body.data
+                db.session.commit()
+                return redirect(url_for('post', id=id))
+
+            form.title.data = post.title
+            form.body.data = post.body
+            return render_template('new-post.html',
+                                   title='Edit post',
+                                   form=form)
+
+        if request.args.get('delete', '') == 't':
+            db.session.delete(post)
             db.session.commit()
-            return redirect(url_for('post', id=id))
+            return redirect(url_for('home'))
         
-        form.title.data = post.title
-        form.body.data = post.body
-        return render_template('new-post.html',
-                               title='Edit post',
-                               form=form)
-
-    if request.args.get('delete', '') == 't':
-        db.session.delete(post)
-        db.session.commit()
-        return redirect(url_for('home'))
     can_edit = False
     if g.user is not None and g.user.is_authenticated() and g.user.id == author.id:
         can_edit = True
