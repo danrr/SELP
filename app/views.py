@@ -19,9 +19,7 @@ def home():
         'posts': []
     }
 
-    print Post.query.order_by(Post.id.desc()).limit(5)
     for post in Post.query.order_by(Post.id.desc()).limit(5):
-        print post
         context['posts'] += [{
             'id': post.id,
             'title': post.title,
