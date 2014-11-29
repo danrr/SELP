@@ -1,6 +1,7 @@
 from datetime import datetime
+
 from app import db
-from config import imgur_client_id, imgur_client_secret
+from app.config import imgur_client_id, imgur_client_secret
 from imgurpython import ImgurClient
 from werkzeug.security import check_password_hash, generate_password_hash
 
