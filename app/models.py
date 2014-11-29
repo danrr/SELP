@@ -66,11 +66,10 @@ class Post(db.Model):
 
 
 class Submission(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(100))
     text = db.Column(db.Text)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
 
     def __init__(self, path, text, user_id, post_id):
         client = ImgurClient(imgur_client_id, imgur_client_secret)
@@ -78,3 +77,9 @@ class Submission(db.Model):
         self.user_id = user_id
         self.post_id = post_id
         self.text = text
+
+    def __repr__(self):
+        return '<Submission by {user_id} to {post_id}: {url}, {text}>'.format(user_id=self.user_id,
+                                                                              post_id=self.post_id,
+                                                                              url=self.url,
+                                                                              text=self.text)
