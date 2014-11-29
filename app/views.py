@@ -127,7 +127,7 @@ def post(id):
     post = Post.query.filter_by(id=id).one()
     author = User.query.filter_by(id=post.user_id).one()
 
-    if author.id == g.user.id:
+    if g.user is not None and g.user.is_authenticated() and author.id == g.user.id:
         if request.args.get('edit', '') == 't':
             form = PostForm()
 
@@ -137,7 +137,7 @@ def post(id):
                 db.session.commit()
                 return redirect(url_for('post', id=id))
 
-            form.title.data = post.title
+            form.title.data = post.titleF
             form.body.data = post.body
             return render_template('new-post.html',
                                    title='Edit post',
@@ -147,18 +147,24 @@ def post(id):
             db.session.delete(post)
             db.session.commit()
             return redirect(url_for('home'))
+
+        if request.args.get('submit', '') == 't':
+            flash('Cannot submit entry to own challenge')
+            return redirect(url_for('post', id=id))
     else:
         if request.args.get('submit', '') == 't':
+            if g.user is None or not g.user.is_authenticated():
+                flash('Please log in to submit')
+                return redirect(url_for('login'))
+            if Submission.query.filter_by(user_id=g.user.id, post_id=id).all():
+                flash("Submission already exists")
+                return redirect(url_for('post', id=id))
             form = SubmissionForm()
             if form.validate_on_submit():
-                if Submission.query.filter_by(user_id=g.user.id, post_id=id).all() is not None:
-                    flash("Submission already exists")
-                    return redirect(url_for('post', id=id))
-
                 path = 'uploads/' + secure_filename(form.image.data.filename)
                 form.image.data.save(path)
                 text = form.body.data
-                submission = Submission(path, text, id, g.user.id)
+                submission = Submission(path, text, g.user.id, id)
                 db.session.add(submission)
                 db.session.commit()
                 os.remove(path)
@@ -172,12 +178,25 @@ def post(id):
     can_edit = False
     if g.user is not None and g.user.is_authenticated() and g.user.id == author.id:
         can_edit = True
+    context = {
+        'title': post.title,
+        'content': post.body,
+        'author': author.username,
+        'can_edit': can_edit,
+        'post_id': post.id,
+        'submissions': []
+    }
+
+    for submission in Submission.query.filter_by(post_id=post.id).all():
+        context['submissions'] += [{
+            'url': submission.url,
+            'text': submission.text,
+            'author': User.query.filter_by(id=submission.user_id).one().username
+        }]
+
     return render_template('post.html',
-                           title=post.title,
-                           content=post.body,
-                           author=author.username,
-                           can_edit=can_edit,
-                           post_id=post.id)
+                           **context
+                           )
 
 
 
