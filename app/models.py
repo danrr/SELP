@@ -3,6 +3,7 @@ from datetime import datetime
 from app import db
 from app.config import imgur_client_id, imgur_client_secret
 from imgurpython import ImgurClient
+from mock import patch, Mock
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
@@ -72,9 +73,11 @@ class Submission(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
 
+    @patch.object(ImgurClient, 'upload_from_path', Mock(return_value={'link': 'http://i.imgur.com/Sj6yA9J.jpg'}))
+    # remove mock when going into "production"
     def __init__(self, path, text, user_id, post_id):
         client = ImgurClient(imgur_client_id, imgur_client_secret)
-        self.url = 'http://i.imgur.com/Sj6yA9J.jpg'#client.upload_from_path(path, config=None, anon=True)['link']
+        self.url = client.upload_from_path(path, config=None, anon=True)['link']
         self.user_id = user_id
         self.post_id = post_id
         self.text = text
