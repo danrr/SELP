@@ -20,6 +20,8 @@ def home():
     }
 
     for post in Post.query.order_by(Post.id.desc()).limit(5):
+        if not post.is_visible():
+            continue
         context['posts'] += [{
             'id': post.id,
             'title': post.title,
@@ -132,6 +134,9 @@ def new_post():
 def post(id):
     post = Post.query.filter_by(id=id).one()
     author = User.query.filter_by(id=post.user_id).one()
+
+    if not post.is_visible():
+        return redirect(url_for('home'))
 
     if is_current_user(author.id):
         if request.args.get('edit', '') == 't':
