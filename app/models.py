@@ -11,7 +11,7 @@ class User(db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(120))
-    score = db.Column(db.Integer, default=0)
+    score = db.Column(db.Integer)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     submissions = db.relationship('Submission', backref='submitter', lazy='dynamic')
 
@@ -19,6 +19,7 @@ class User(db.Model):
         self.username = username
         self.email = email
         self.password_hash = generate_password_hash(password)
+        self.score = 0
 
     def is_authenticated(self):
         return True
