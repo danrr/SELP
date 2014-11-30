@@ -1,6 +1,6 @@
 from app import db
 from mock import patch, Mock
-from app.models import User
+from app.models import User, Submission
 from tests.base_test import BaseTest
 
 
@@ -43,3 +43,11 @@ class TestViews(BaseTest):
         db.session.commit()
         self.assertEqual(user1.get_rank(), 1)
         self.assertEqual(user2.get_rank(), 2)
+
+    #submission model
+    @patch('app.models.ImgurClient.upload_from_path')
+    def test_submission_model_can_init(self, patch_imgur):
+        submission = Submission('a/b/c', 'abcdef', 1, 1)
+        self.assertEqual(submission.text, 'abcdef')
+        # uncomment when imgur upload is enabled
+        # patch_imgur.assert_called_with('a/b/c', config=None, anon=True)
