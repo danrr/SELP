@@ -1,3 +1,4 @@
+from app import db
 from mock import patch, Mock
 from app.models import User
 from tests.base_test import BaseTest
@@ -32,3 +33,13 @@ class TestViews(BaseTest):
         user = User('Dan', 'aa@aa.com', '12345')
         user.check_password('1234')
         patch_check_hash.assert_called_with('abcdef', '1234')
+
+    def test_user_model_ranking(self):
+        user1 = User('Dan', 'aa@aa.com', '12345')
+        user2 = User('Dan1', 'aaa@aa.com', '12345')
+        user1.increase_score(10)
+        db.session.add(user1)
+        db.session.add(user2)
+        db.session.commit()
+        self.assertEqual(user1.get_rank(), 1)
+        self.assertEqual(user2.get_rank(), 2)
