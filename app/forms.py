@@ -20,6 +20,7 @@ class RegistrationForm(Form):
 class PostForm(Form):
     title = StringField('Title:', validators=[DataRequired()])
     body = TextAreaField('Body:', validators=[DataRequired()])
+    startnow = BooleanField('Start now', validators=[Optional()], default=True)
     date = DateField('Start date: (if not now)', validators=[Optional()])
 
 

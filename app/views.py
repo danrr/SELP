@@ -112,8 +112,14 @@ def user(username):
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
-        # TODO: deal with date
-        post = Post(form.title.data, form.body.data, g.user.id)
+        if form.startnow.data:
+            date = None
+        else:
+            if not form.date.data:
+                flash('You must input date if start now checkbox is deselected')
+                return redirect(url_for('new_post'))
+            date = form.date.data
+        post = Post(form.title.data, form.body.data, g.user.id, publish_time=date)
         db.session.add(post)
         db.session.commit()
         return redirect((url_for('home')))
@@ -137,8 +143,10 @@ def post(id):
                 db.session.commit()
                 return redirect(url_for('post', id=id))
 
-            form.title.data = post.titleF
+            form.title.data = post.title
             form.body.data = post.body
+            form.startnow.data = False
+            form.date.data = post.publish_time
             return render_template('new-post.html',
                                    title='Edit post',
                                    form=form)
