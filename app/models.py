@@ -63,13 +63,27 @@ class Post(db.Model):
             publish_time = datetime.utcnow()
         self.publish_time = publish_time
 
+    def is_visible(self):
+        return self.publish_time <= datetime.utcnow()
+
+    def is_archived(self):
+        return self.is_closed() and any(submission.won for submission in self.submissions)
+
+    def are_submissions_open(self):
+        return self.is_visible() and self.publish_time < datetime.utcnow() + datetime.timedelta(days=7)
+
+    def is_closed(self):
+        return self.is_visible() and not self.are_submissions_open()
+
     def __repr__(self):
         return '<Post {title}>'.format(title=self.title)
 
 
 class Submission(db.Model):
+    id = db.Column(db.Integer)
     url = db.Column(db.String(100))
     text = db.Column(db.Text)
+    won = db.Column(db.Boolean)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
 
@@ -81,6 +95,13 @@ class Submission(db.Model):
         self.user_id = user_id
         self.post_id = post_id
         self.text = text
+        self.won = False
+
+    def make_winner(self):
+        if not self.__class__.query.filter_by(post_id=self.post_id).all():
+            self.won = True
+        else:
+            raise Exception('There is a winner already')
 
     def __repr__(self):
         return '<Submission by {user_id} to {post_id}: {url}, {text}>'.format(user_id=self.user_id,
