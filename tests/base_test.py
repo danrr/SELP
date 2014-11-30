@@ -1,4 +1,4 @@
-#!flask/bin/python
+#!env/bin/python
 import unittest
 
 from app import app, db
