@@ -31,7 +31,7 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if g.user is not None and g.user.is_authenticated():
+    if is_user_logged_in():
         return redirect(url_for('home'))
 
     form = LoginForm()
@@ -127,7 +127,7 @@ def post(id):
     post = Post.query.filter_by(id=id).one()
     author = User.query.filter_by(id=post.user_id).one()
 
-    if g.user is not None and g.user.is_authenticated() and author.id == g.user.id:
+    if is_current_user(author.id):
         if request.args.get('edit', '') == 't':
             form = PostForm()
 
@@ -153,7 +153,7 @@ def post(id):
             return redirect(url_for('post', id=id))
     else:
         if request.args.get('submit', '') == 't':
-            if g.user is None or not g.user.is_authenticated():
+            if not is_user_logged_in():
                 flash('Please log in to submit')
                 return redirect(url_for('login'))
             if Submission.query.filter_by(user_id=g.user.id, post_id=id).all():
@@ -176,7 +176,7 @@ def post(id):
                                    form=form)
 
     can_edit = False
-    if g.user is not None and g.user.is_authenticated() and g.user.id == author.id:
+    if is_current_user(author.id):
         can_edit = True
     context = {
         'title': post.title,
@@ -199,6 +199,13 @@ def post(id):
                            )
 
 
+#helpers
+def is_user_logged_in():
+    return g.user is not None and g.user.is_authenticated()
+
+
+def is_current_user(user_id):
+    return is_user_logged_in() and g.user.id == user_id
 
 @login_manager.user_loader
 def load_user(id):
