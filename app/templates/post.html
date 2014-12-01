@@ -19,13 +19,20 @@
             <div class="post-content">
                 {{ content }}
             </div>
-            <div class="submit">
-                <a href="?submit=t">Submit</a>
-            </div>
+
+            {% if submissions_open %}
+                <div class="submit">
+                    <a href="?submit=t">Submit</a>
+                </div>
+            {% endif %}
+
             <h3>Submissions</h3>
             <ul class="submissions">
                 {% for submission in submissions %}
                     <li>
+                    {% if post_closed %}
+                        <a href="#">Choose as winner</a>
+                    {% endif %}
                     <a href="{{ url_for('user', username=submission.author) }}">{{ submission.author }}</a>
                     <img src="{{submission.url}}" alt="submission by {{ submission.author }}" width="300px" height="300px">
                     <span>{{ submission.text }}</span>

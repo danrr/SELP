@@ -140,6 +140,10 @@ def post(id):
 
     if is_current_user(author.id):
         if request.args.get('edit', '') == 't':
+            if post.is_archived():
+                flash('Archived posts cannot be modified')
+                return redirect(url_for('post', id=id))
+
             form = PostForm()
 
             if form.validate_on_submit():
@@ -157,6 +161,9 @@ def post(id):
                                    form=form)
 
         if request.args.get('delete', '') == 't':
+            if post.is_archived():
+                flash('Archived posts cannot be deleted')
+                return redirect(url_for('post', id=id))
             db.session.delete(post)
             db.session.commit()
             return redirect(url_for('home'))
@@ -172,6 +179,10 @@ def post(id):
             if Submission.query.filter_by(user_id=g.user.id, post_id=id).all():
                 flash("Submission already exists")
                 return redirect(url_for('post', id=id))
+            if not post.are_submissions_open():
+                flash('Submissions are not open for this post')
+                return redirect(url_for('post', id=id))
+
             form = SubmissionForm()
             if form.validate_on_submit():
                 path = 'uploads/' + secure_filename(form.image.data.filename)
@@ -188,15 +199,15 @@ def post(id):
                                    title='Submit entry',
                                    form=form)
 
-    can_edit = False
-    if is_current_user(author.id):
-        can_edit = True
+    can_edit = is_current_user(author.id) and not post.is_archived()
     context = {
         'title': post.title,
         'content': post.body,
         'author': author.username,
         'can_edit': can_edit,
         'post_id': post.id,
+        'post_closed': post.is_closed(),
+        'submissions_open': post.are_submissions_open(),
         'submissions': []
     }
 
