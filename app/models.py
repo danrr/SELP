@@ -1,10 +1,9 @@
-from datetime import datetime
-
+from datetime import datetime, timedelta
+from mock import patch, Mock
+from imgurpython import ImgurClient
+from werkzeug.security import check_password_hash, generate_password_hash
 from app import db
 from app.config import imgur_client_id, imgur_client_secret
-from imgurpython import ImgurClient
-from mock import patch, Mock
-from werkzeug.security import check_password_hash, generate_password_hash
 
 
 class User(db.Model):
@@ -67,10 +66,10 @@ class Post(db.Model):
         return self.publish_time <= datetime.utcnow()
 
     def is_archived(self):
-        return self.is_closed() and any(submission.won for submission in self.submissions)
+        return self.is_closed() and any(submission.won for submission in self.submissions.all())
 
     def are_submissions_open(self):
-        return self.is_visible() and self.publish_time < datetime.utcnow() + datetime.timedelta(days=7)
+        return self.is_visible() and self.publish_time < datetime.utcnow() + timedelta(days=7)
 
     def is_closed(self):
         return self.is_visible() and not self.are_submissions_open()
