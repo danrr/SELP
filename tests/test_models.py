@@ -1,6 +1,7 @@
+from datetime import datetime, timedelta
 from app import db
 from mock import patch, Mock
-from app.models import User, Submission
+from app.models import User, Submission, Post
 from tests.base_test import BaseTest
 
 
@@ -43,6 +44,54 @@ class TestViews(BaseTest):
         db.session.commit()
         self.assertEqual(user1.get_rank(), 1)
         self.assertEqual(user2.get_rank(), 2)
+
+    # TODO: test posts and submissions?
+
+    #post model
+    def test_post_model_can_init(self):
+        date = datetime.strptime('2014-12-12', '%Y-%m-%d')
+        post = Post('Title', 'Body', 1, date)
+        self.assertEqual(post.title, 'Title')
+        self.assertEqual(post.body, 'Body')
+        self.assertEqual(post.user_id, 1)
+        self.assertEqual(post.publish_time, date)
+
+    def test_post_model_is_visible(self):
+        date = datetime.utcnow() - timedelta(1)
+        post = Post('Title', 'Body', 1, date)
+        self.assertTrue(post.is_visible())
+        date = datetime.utcnow() + timedelta(1)
+        post = Post('Title', 'Body', 1, date)
+        self.assertFalse(post.is_visible())
+
+    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    @patch('app.models.Post.is_closed', Mock(return_value=True))
+    def test_post_model_is_archived(self):
+        user = User('dan', 'dan@aadf.com', '12345')
+        db.session.add(user)
+        db.session.commit()
+
+        post = Post('Title', 'Body', user.id)
+        db.session.add(post)
+        db.session.commit()
+        self.assertFalse(post.is_archived())
+
+        submission = Submission('a/b/c', 'abcdef', user_id=user.id, post_id=post.id)
+        submission.won = True
+        db.session.add(submission)
+        db.session.commit()
+
+        self.assertTrue(post.is_archived())
+
+    @patch('app.models.Post.is_visible', Mock(return_value=True))
+    def test_post_model_are_submissions_open(self):
+        date = datetime.utcnow() + timedelta(1)
+        post = Post('Title', 'Body', 1, date)
+        self.assertTrue(post.are_submissions_open())
+
+        date = datetime.utcnow() + timedelta(8)
+        post = Post('Title', 'Body', 1, date)
+        self.assertFalse(post.are_submissions_open())
 
     #submission model
     @patch('app.models.ImgurClient.upload_from_path')
