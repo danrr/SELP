@@ -1,10 +1,10 @@
+import os
+from werkzeug.utils import secure_filename
 from flask import render_template, redirect, flash, g, url_for, request
+from flask.ext.login import login_user, current_user, logout_user, login_required
 from app import app, login_manager, db
 from app.forms import LoginForm, RegistrationForm, PostForm, SubmissionForm
 from app.models import User, Post, Submission
-from flask.ext.login import login_user, current_user, logout_user, login_required
-import os
-from werkzeug.utils import secure_filename
 
 
 @app.before_request
@@ -132,11 +132,13 @@ def new_post():
 
 @app.route('/post/<int:id>/', methods=['GET', 'POST'])
 def post(id):
-    post = Post.query.filter_by(id=id).one()
+    post = Post.query.filter_by(id=id).first()
+    if post is None or not post.is_visible():
+        flash('Post not found')
+        return redirect(url_for('home'))
+
     author = User.query.filter_by(id=post.user_id).one()
 
-    if not post.is_visible():
-        return redirect(url_for('home'))
 
     if is_current_user(author.id):
         if request.args.get('edit', '') == 't':
@@ -230,6 +232,7 @@ def is_user_logged_in():
 
 def is_current_user(user_id):
     return is_user_logged_in() and g.user.id == user_id
+
 
 @login_manager.user_loader
 def load_user(id):
