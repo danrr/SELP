@@ -27,9 +27,11 @@
             {% endif %}
 
             <h3>Submissions</h3>
-            <ul class="submissions">
+            <ul class="submissions" data-post-id="{{ post_id }}">
                 {% for submission in submissions %}
-                    <li id="{{ submission.author_id }}" {% if submission.won %}class="winner"{% endif %}>
+                    <li data-author-id="{{ submission.author_id }}" {% if submission.won %}class="winning-submission"{% endif %}>
+                        <span class="winner">Winner</span>
+                        <span class="star"></span>
                         {% if post_closed and can_edit %}
                             <a href="#">Choose as winner</a>
                         {% endif %}
