@@ -7,9 +7,16 @@ load = ->
             $el.siblings().html score + 1
         else
             $el.siblings().html score - 1
-        id = $el.parent().parent().attr('id')
+        author_id = $el.parents('li').data('author-id')
+        post_id = $el.parents('ul').data('post-id')
         $.ajax
-            url: "upvote/#{id}"
+            url: "/upvote/"
+            type: "POST"
+            data:
+                type: "submission"
+                author_id: author_id
+                post_id: post_id
+
 
 $(document).ready load
 $(document).on "page:load", load

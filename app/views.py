@@ -1,6 +1,6 @@
 import os
 from werkzeug.utils import secure_filename
-from flask import render_template, redirect, flash, g, url_for, request
+from flask import render_template, redirect, flash, g, url_for, request, jsonify
 from flask.ext.login import login_user, current_user, logout_user, login_required
 from app import app, login_manager, db
 from app.forms import LoginForm, RegistrationForm, PostForm, SubmissionForm
@@ -219,12 +219,22 @@ def post(id):
             'url': submission.url,
             'text': submission.text,
             'author': author.username,
-            'author_id': author.id
+            'author_id': author.id,
+            'won': submission.won
         }]
 
     return render_template('post.html',
                            **context
                            )
+
+@app.route('/upvote/', methods=['POST'])
+@login_required
+def upvote():
+    if request.form["type"] == "submission":
+        print request.form["author_id"]
+        print request.form["post_id"]
+        print g.user.id
+    return jsonify()
 
 
 #helpers
