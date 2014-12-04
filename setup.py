@@ -8,4 +8,5 @@ subprocess.call("virtualenv -p /usr/bin/python2.7 env &&"
                 "source ./nvm.sh && "
                 "nvm install stable && "
                 "npm install -g coffee-script && cd .. && "
-                "coffee -c app/static/app.coffee", shell=True)
+                "coffee -c app/static/app.coffee &&"
+                "scss app/static/app.scss app/static/app.css", shell=True)

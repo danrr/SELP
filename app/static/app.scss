@@ -1,0 +1,15 @@
+.upvote {
+    a {
+        cursor: pointer;
+        color: gray;
+
+        &:hover {
+            color: red;
+        }
+
+        &.on {
+          color: orange;
+        }
+
+    }
+}
