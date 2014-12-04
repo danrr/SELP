@@ -214,10 +214,12 @@ def post(id):
     }
 
     for submission in Submission.query.filter_by(post_id=post.id).all():
+        author = User.query.filter_by(id=submission.user_id).one()
         context['submissions'] += [{
             'url': submission.url,
             'text': submission.text,
-            'author': User.query.filter_by(id=submission.user_id).one().username
+            'author': author.username,
+            'author_id': author.id
         }]
 
     return render_template('post.html',

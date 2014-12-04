@@ -4,7 +4,7 @@
         <div class="post">
             <div class="author">
                 <span>
-                    {{ author }}
+                    <a href="{{ url_for('user', username=author) }}" >{{ author }}</a>
                 </span>
                 {% if can_edit %}
                     <span>
@@ -29,13 +29,17 @@
             <h3>Submissions</h3>
             <ul class="submissions">
                 {% for submission in submissions %}
-                    <li>
-                    {% if post_closed %}
-                        <a href="#">Choose as winner</a>
-                    {% endif %}
-                    <a href="{{ url_for('user', username=submission.author) }}">{{ submission.author }}</a>
-                    <img src="{{submission.url}}" alt="submission by {{ submission.author }}" width="300px" height="300px">
-                    <span>{{ submission.text }}</span>
+                    <li id="{{ submission.author_id }}" {% if submission.won %}class="winner"{% endif %}>
+                        {% if post_closed and can_edit %}
+                            <a href="#">Choose as winner</a>
+                        {% endif %}
+                        <div class="upvote">
+                            <a>&#x25B2;</a>
+                            <span>612</span>
+                        </div>
+                        <a href="{{ url_for('user', username=submission.author) }}">{{ submission.author }}</a>
+                        <img src="{{submission.url}}" alt="submission by {{ submission.author }}" width="300px" height="300px">
+                        <span>{{ submission.text }}</span>
                     </li>
                 {% endfor %}
             </ul>
