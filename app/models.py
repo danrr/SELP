@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from mock import patch, Mock
 from imgurpython import ImgurClient
+from sqlalchemy import UniqueConstraint
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import db
 from app.config import imgur_client_id, imgur_client_secret
@@ -79,12 +80,15 @@ class Post(db.Model):
 
 
 class Submission(db.Model):
-    id = db.Column(db.Integer)
+    __table_args__ = (
+        UniqueConstraint('user_id', 'post_id', name='user_id_post_id'),
+    )
+    id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(100))
     text = db.Column(db.Text)
     won = db.Column(db.Boolean)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
 
     @patch.object(ImgurClient, 'upload_from_path', Mock(return_value={'link': 'http://i.imgur.com/Sj6yA9J.jpg'}))
     # remove mock when going into "production"
