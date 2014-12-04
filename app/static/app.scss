@@ -1,4 +1,24 @@
+ul.submissions {
+
+    li {
+        display: inline-block;
+        list-style-type: none;
+        border: solid 2px gainsboro;
+        border-radius: 2px;
+
+        a {
+            display: inline-block;
+        }
+    }
+
+    img {
+        display: block;
+    }
+}
+
 .upvote {
+    display: inline-block;
+
     a {
         cursor: pointer;
         color: gray;
