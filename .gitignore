@@ -3,3 +3,5 @@ db_repository
 *.py[ocd]
 .idea
 README.html
+*.js
+.nvm
