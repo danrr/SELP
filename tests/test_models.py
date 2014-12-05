@@ -5,49 +5,47 @@ from app.models import User, Submission, Post
 from tests.base_test import BaseTest
 
 
-class TestViews(BaseTest):
+class TestUserModel(BaseTest):
+    def setUp(self):
+        super(TestUserModel, self).setUp()
+        self.user = User('Dan', 'aa@aa.com', '12345')
 
-    #user model
     @patch('app.models.generate_password_hash')
     def test_user_model_can_init(self, patch_hash):
-        user = User('Dan', 'aa@aa.com', '12345')
-        self.assertEqual(user.username, 'Dan')
-        self.assertEqual(user.email, 'aa@aa.com')
+        user1 = User('Dan1', 'aa@aa.com', '12345')
+        self.assertEqual(user1.username, 'Dan1')
+        self.assertEqual(user1.email, 'aa@aa.com')
         patch_hash.assert_called_with('12345')
-        self.assertEqual(user.score, 0)
+        self.assertEqual(user1.score, 0)
 
     def test_user_model_login_methods(self):
-        user = User('Dan', 'aa@aa.com', '12345')
-        self.assertEqual(user.is_authenticated(), True)
-        self.assertEqual(user.is_active(), True)
-        self.assertEqual(user.is_anonymous(), False)
+        self.assertEqual(self.user.is_authenticated(), True)
+        self.assertEqual(self.user.is_active(), True)
+        self.assertEqual(self.user.is_anonymous(), False)
 
     def test_user_model_can_increase_score(self):
-        user = User('Dan', 'aa@aa.com', '12345')
-        self.assertEqual(user.score, 0)
-        user.increase_score(10)
-        self.assertEqual(user.score, 10)
+        self.assertEqual(self.user.score, 0)
+        self.user.increase_score(10)
+        self.assertEqual(self.user.score, 10)
 
     @patch('app.models.generate_password_hash', Mock(return_value='abcdef'))
     @patch('app.models.check_password_hash')
     def test_user_model_can_check_password(self, patch_check_hash):
-        user = User('Dan', 'aa@aa.com', '12345')
-        user.check_password('1234')
+        user1 = User('Dan1', 'aa@aa.com', '12345')
+        user1.check_password('1234')
         patch_check_hash.assert_called_with('abcdef', '1234')
 
     def test_user_model_ranking(self):
-        user1 = User('Dan', 'aa@aa.com', '12345')
-        user2 = User('Dan1', 'aaa@aa.com', '12345')
-        user1.increase_score(10)
+        user1 = User('Dan1', 'aaa@aa.com', '12345')
+        self.user.increase_score(10)
+        db.session.add(self.user)
         db.session.add(user1)
-        db.session.add(user2)
         db.session.commit()
-        self.assertEqual(user1.get_rank(), 1)
-        self.assertEqual(user2.get_rank(), 2)
+        self.assertEqual(self.user.get_rank(), 1)
+        self.assertEqual(user1.get_rank(), 2)
 
-    # TODO: test posts and submissions?
 
-    #post model
+class TestPostModel(BaseTest):
     def test_post_model_can_init(self):
         date = datetime.strptime('2014-12-12', '%Y-%m-%d')
         post = Post('Title', 'Body', 1, date)
@@ -93,7 +91,23 @@ class TestViews(BaseTest):
         post = Post('Title', 'Body', 1, date)
         self.assertFalse(post.are_submissions_open())
 
-    #submission model
+
+class TestSubmissionModel(BaseTest):
+    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    def setUp(self):
+        super(TestSubmissionModel, self).setUp()
+        self.user1 = User('Dan', 'aa@aa.com', '12345')
+        self.user2 = User('Dan1', 'aaa@aa.com', '12345')
+        db.session.add(self.user1)
+        db.session.add(self.user2)
+        db.session.commit()
+        self.post = Post('Title', 'Body', self.user1.id)
+        db.session.add(self.post)
+        db.session.commit()
+        self.submission = Submission('a/b/c', 'abcdef', user_id=self.user1.id, post_id=self.post.id)
+        db.session.add(self.submission)
+        db.session.commit()
+
     @patch('app.models.ImgurClient.upload_from_path')
     def test_submission_model_can_init(self, patch_imgur):
         submission = Submission('a/b/c', 'abcdef', 1, 1)
