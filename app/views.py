@@ -231,9 +231,9 @@ def post(id):
 @login_required
 def upvote():
     if request.form["type"] == "submission":
-        print request.form["author_id"]
-        print request.form["post_id"]
-        print g.user.id
+        submission = Submission.query.filter_by(user_id=request.form["post_id"],
+                                                post_id=request.form["author_id"]).first()
+        submission.toggle_upvote(g.user)
     return jsonify()
 
 
