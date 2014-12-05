@@ -119,15 +119,20 @@ class Submission(db.Model):
         else:
             raise Exception('There is a winner already')
 
-    def toggle_upvote(self, user):
-        upvote = self.votes.filter_by(id=user.id).first()
-        if upvote:
-            self.votes.remove(upvote)
+    def toggle_upvote(self, user_id):
+        user = User.query.filter_by(id=user_id).first()
+        if self.has_user_upvoted(user_id):
+            self.votes.remove(user)
         else:
             self.votes.append(user)
 
     def count_upvotes(self):
         return self.votes.count()
+
+    def has_user_upvoted(self, user_id):
+        if self.votes.filter_by(id=user_id).first():
+            return True
+        return False
 
     def __repr__(self):
         return '<Submission by {user_id} to {post_id}: {url}, {text}>'.format(user_id=self.user_id,
