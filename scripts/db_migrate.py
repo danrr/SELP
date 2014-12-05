@@ -26,8 +26,14 @@ def migrate_db(db_uri, migrate_repo):
     print('New migration saved as ' + migration)
     print('Current database version: ' + str(v))
 
-#app db
-migrate_db(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
 
-#test db
-migrate_db(TEST_SQLALCHEMY_DATABASE_URI, TEST_SQLALCHEMY_MIGRATE_REPO)
+def main():
+    #app db
+    migrate_db(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
+
+    #test db
+    migrate_db(TEST_SQLALCHEMY_DATABASE_URI, TEST_SQLALCHEMY_MIGRATE_REPO)
+
+
+if __name__ == "__main__":
+    main()

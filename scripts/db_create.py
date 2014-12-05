@@ -16,9 +16,15 @@ def create_db_and_update(db_uri, migrate_repo):
                             migrate_repo,
                             api.version(migrate_repo))
 
-db.create_all()
-#app db
-create_db_and_update(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
 
-#test db
-create_db_and_update(TEST_SQLALCHEMY_DATABASE_URI, TEST_SQLALCHEMY_MIGRATE_REPO)
+def main():
+    db.create_all()
+    #app db
+    create_db_and_update(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
+
+    #test db
+    create_db_and_update(TEST_SQLALCHEMY_DATABASE_URI, TEST_SQLALCHEMY_MIGRATE_REPO)
+
+
+if __name__ == "__main__":
+    main()

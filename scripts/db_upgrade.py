@@ -11,8 +11,13 @@ def upgrade_db(db_uri, migrate_repo):
     print('Current database version: ' + str(v))
 
 
-#app db
-upgrade_db(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
+def main():
+    #app db
+    upgrade_db(SQLALCHEMY_DATABASE_URI, SQLALCHEMY_MIGRATE_REPO)
 
-#test db
-upgrade_db(TEST_SQLALCHEMY_DATABASE_URI, TEST_SQLALCHEMY_MIGRATE_REPO)
+    #test db
+    upgrade_db(TEST_SQLALCHEMY_DATABASE_URI, TEST_SQLALCHEMY_MIGRATE_REPO)
+
+
+if __name__ == "__main__":
+    main()
