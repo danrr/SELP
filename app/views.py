@@ -1,3 +1,4 @@
+from datetime import date
 import os
 from werkzeug.utils import secure_filename
 from flask import render_template, redirect, flash, g, url_for, request, jsonify
@@ -121,7 +122,7 @@ def new_post():
                 flash('You must input date if start now checkbox is deselected')
                 return redirect(url_for('new_post'))
             date = form.date.data
-        post = Post(form.title.data, form.body.data, g.user.id, publish_time=date)
+        post = Post(form.title.data, form.body.data, g.user.id, publish_time=date, difficulty=form.difficulty.data)
         db.session.add(post)
         db.session.commit()
         return redirect((url_for('home')))
@@ -150,6 +151,14 @@ def post(id):
             if form.validate_on_submit():
                 post.title = form.title.data
                 post.body = form.body.data
+                post.difficulty = form.difficulty.data
+                if form.startnow.data:
+                    post.publish_time = date.today()
+                else:
+                    if not form.date.data:
+                        flash('You must input date if start now checkbox is deselected')
+                        return redirect(url_for('post', id=id, edit='t'))
+                    post.publish_time = form.date.data
                 db.session.commit()
                 return redirect(url_for('post', id=id))
 
@@ -157,6 +166,7 @@ def post(id):
             form.body.data = post.body
             form.startnow.data = False
             form.date.data = post.publish_time
+            form.difficulty.data = post.difficulty.data
             return render_template('new-post.html',
                                    title='Edit post',
                                    form=form)

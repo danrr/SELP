@@ -27,6 +27,17 @@
             {% endif %}
         </div>
         <div>
+            {{ form.difficulty.label }}
+            {{ form.difficulty() }}
+            {% if form.difficulty.errors %}
+                 <ul class="errors">
+                     {% for error in form.difficulty.errors %}
+                         <li>{{ error }}</li>
+                     {% endfor %}
+                 </ul>
+            {% endif %}
+        </div>
+        <div>
             {{ form.startnow.label }}
             {{ form.startnow() }}
             {% if form.startnow.errors %}

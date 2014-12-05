@@ -51,14 +51,16 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     body = db.Column(db.Text)
+    difficulty = db.Column(db.Integer)
     publish_time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     submissions = db.relationship('Submission', backref='post', lazy='dynamic')
 
-    def __init__(self, title, body, user_id, publish_time=None):
+    def __init__(self, title, body, user_id, difficulty, publish_time=None):
         self.title = title
         self.body = body
         self.user_id = user_id
+        self.difficulty = difficulty
         if not publish_time:
             publish_time = datetime.utcnow()
         self.publish_time = publish_time

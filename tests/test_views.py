@@ -15,7 +15,7 @@ class TestViews(BaseTest):
     def test_homepage_displays_with_posts(self):
         user = User(username='dan', email='dan@X.com', password='12345')
         db.session.add(user)
-        post = Post(title='POSTTITLE', body='POSTBODY', user_id=user.id)
+        post = Post(title='POSTTITLE', body='POSTBODY', user_id=user.id, difficulty=2)
         db.session.add(post)
         response = self.app.get('/')
         self.assertEqual(response.status_code, 200)

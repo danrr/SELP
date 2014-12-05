@@ -48,18 +48,19 @@ class TestUserModel(BaseTest):
 class TestPostModel(BaseTest):
     def test_post_model_can_init(self):
         date = datetime.strptime('2014-12-12', '%Y-%m-%d')
-        post = Post('Title', 'Body', 1, date)
+        post = Post('Title', 'Body', 1, publish_time=date, difficulty=2)
         self.assertEqual(post.title, 'Title')
         self.assertEqual(post.body, 'Body')
         self.assertEqual(post.user_id, 1)
         self.assertEqual(post.publish_time, date)
+        self.assertEqual(post.difficulty, 2)
 
     def test_post_model_is_visible(self):
         date = datetime.utcnow() - timedelta(1)
-        post = Post('Title', 'Body', 1, date)
+        post = Post('Title', 'Body', 1, publish_time=date, difficulty=2)
         self.assertTrue(post.is_visible())
         date = datetime.utcnow() + timedelta(1)
-        post = Post('Title', 'Body', 1, date)
+        post = Post('Title', 'Body', 1, publish_time=date, difficulty=2)
         self.assertFalse(post.is_visible())
 
     @patch('app.models.ImgurClient.upload_from_path', Mock())
@@ -69,7 +70,7 @@ class TestPostModel(BaseTest):
         db.session.add(user)
         db.session.commit()
 
-        post = Post('Title', 'Body', user.id)
+        post = Post('Title', 'Body', user.id, difficulty=5)
         db.session.add(post)
         db.session.commit()
         self.assertFalse(post.is_archived())
@@ -84,11 +85,11 @@ class TestPostModel(BaseTest):
     @patch('app.models.Post.is_visible', Mock(return_value=True))
     def test_post_model_are_submissions_open(self):
         date = datetime.utcnow() + timedelta(1)
-        post = Post('Title', 'Body', 1, date)
+        post = Post('Title', 'Body', 1, publish_time=date, difficulty=3)
         self.assertTrue(post.are_submissions_open())
 
         date = datetime.utcnow() + timedelta(8)
-        post = Post('Title', 'Body', 1, date)
+        post = Post('Title', 'Body', 1, publish_time=date, difficulty=3)
         self.assertFalse(post.are_submissions_open())
 
 
@@ -101,7 +102,7 @@ class TestSubmissionModel(BaseTest):
         db.session.add(self.user1)
         db.session.add(self.user2)
         db.session.commit()
-        self.post = Post('Title', 'Body', self.user1.id)
+        self.post = Post('Title', 'Body', self.user1.id, difficulty=1)
         db.session.add(self.post)
         db.session.commit()
         self.submission = Submission('a/b/c', 'abcdef', user_id=self.user1.id, post_id=self.post.id)
