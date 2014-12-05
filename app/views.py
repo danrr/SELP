@@ -220,7 +220,9 @@ def post(id):
             'text': submission.text,
             'author': author.username,
             'author_id': author.id,
-            'won': submission.won
+            'won': submission.won,
+            'score': submission.count_upvotes(),
+            'user_upvoted': submission.has_user_upvoted(g.user.id)
         }]
 
     return render_template('post.html',
@@ -230,10 +232,12 @@ def post(id):
 @app.route('/upvote/', methods=['POST'])
 @login_required
 def upvote():
+    # TODO: not allow voting on closed posts.
     if request.form["type"] == "submission":
-        submission = Submission.query.filter_by(user_id=request.form["post_id"],
-                                                post_id=request.form["author_id"]).first()
-        submission.toggle_upvote(g.user)
+        submission = Submission.query.filter_by(user_id=request.form["author_id"],
+                                                post_id=request.form["post_id"]).first()
+        submission.toggle_upvote(g.user.id)
+        db.session.commit()
     return jsonify()
 
 

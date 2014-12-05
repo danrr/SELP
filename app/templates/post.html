@@ -35,9 +35,9 @@
                         {% if post_closed and can_edit %}
                             <a href="#">Choose as winner</a>
                         {% endif %}
-                        <div class="upvote">
-                            <a>&#x25B2;</a>
-                            <span>612</span>
+                        <div class="upvote" >
+                            <a {% if submission.user_upvoted %}class="on"{% endif %}>&#x25B2;</a>
+                            <span>{{submission.score}}</span>
                         </div>
                         <a href="{{ url_for('user', username=submission.author) }}">{{ submission.author }}</a>
                         <img src="{{submission.url}}" alt="submission by {{ submission.author }}" width="300px" height="300px">

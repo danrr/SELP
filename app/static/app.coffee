@@ -16,6 +16,7 @@ load = ->
                 type: "submission"
                 author_id: author_id
                 post_id: post_id
+        # TODO: receive message that post is closed and can't be voted on and display to user
 
 
 $(document).ready load
