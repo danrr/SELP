@@ -114,3 +114,37 @@ class TestSubmissionModel(BaseTest):
         self.assertEqual(submission.text, 'abcdef')
         # uncomment when imgur upload is enabled
         # patch_imgur.assert_called_with('a/b/c', config=None, anon=True)
+
+    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    def test_submission_model_knows_user_upvoted(self):
+        self.assertTrue(self.submission.has_user_upvoted(self.user1.id))
+        self.assertFalse(self.submission.has_user_upvoted(self.user2.id))
+
+    @patch('app.models.Submission.has_user_upvoted', Mock(return_value=False))
+    def test_submission_model_can_toggle_upvotes_to_true(self):
+        self.assertEqual(self.submission.votes.all(), [self.user1])
+        self.submission.toggle_upvote(self.user2.id)
+        db.session.commit()
+        self.assertEqual(self.submission.votes.all(), [self.user1, self.user2])
+
+    @patch('app.models.Submission.has_user_upvoted', Mock(return_value=True))
+    def test_submission_model_can_toggle_upvotes_to_false(self):
+        self.assertEqual(self.submission.votes.all(), [self.user1])
+        self.submission.toggle_upvote(self.user1.id)
+        db.session.commit()
+        self.assertEqual(self.submission.votes.all(), [])
+
+    def test_submission_model_can_count_upvotes(self):
+        self.assertEqual(self.submission.count_upvotes(), 1)
+        self.submission.votes.append(self.user2)
+        self.assertEqual(self.submission.count_upvotes(), 2)
+
+    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    def test_submission_model_can_make_winner(self):
+        self.submission.make_winner()
+        db.session.commit()
+        self.assertTrue(self.submission.won)
+        submission1 = Submission('a/b/c', 'abcdef', user_id=self.user2.id, post_id=self.post.id)
+        db.session.add(submission1)
+        db.session.commit()
+        self.assertRaises(Exception, submission1.make_winner)
