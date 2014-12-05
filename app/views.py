@@ -17,17 +17,8 @@ def before_request():
 def home():
     context = {
         'title': 'Cooking challenge',
-        'posts': []
+        'posts': [post for post in Post.query.order_by(Post.id.desc()).limit(5) if post.is_visible()]
     }
-
-    for post in Post.query.order_by(Post.id.desc()).limit(5):
-        if not post.is_visible():
-            continue
-        context['posts'] += [{
-            'id': post.id,
-            'title': post.title,
-            'content': post.body
-        }]
 
     return render_template('index.html', **context)
 
@@ -98,14 +89,8 @@ def user(username):
         'title': 'Cooking challenge',
         'rank': user.get_rank(),
         'score': user.score,
-        'posts': []
+        'posts': user.posts
     }
-    for post in user.posts:
-        context['posts'] += [{
-            'id': post.id,
-            'title': post.title,
-            'content': post.body
-        }]
 
     return render_template('userpage.html', **context)
 

@@ -7,8 +7,9 @@
             <h2>
                 <a href="{{ url_for("post", id=post.id) }}">{{post.title}}</a>
             </h2>
-            <div class="post-content">
-                {{post.content}}
+            <div class="difficulty-{{ post.difficulty }}"> {{ post.get_difficulty_string() }}</div>
+            <div class="content">
+                {{post.body}}
             </div>
         </div>
     {% endfor %}
