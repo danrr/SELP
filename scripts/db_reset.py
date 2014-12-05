@@ -41,7 +41,6 @@ def main():
     submission5 = Submission('a/b/c', 'This is my carrot cake', post_id=post3.id, user_id=user3.id)
     submission6 = Submission('a/b/c', 'This is my carrot cake', post_id=post3.id, user_id=user4.id)
     submission7 = Submission('a/b/c', 'This is my carrot cake', post_id=post3.id, user_id=user1.id)
-    submission1.make_winner()
     db.session.add(submission1)
     db.session.add(submission2)
     db.session.add(submission3)
@@ -49,6 +48,17 @@ def main():
     db.session.add(submission5)
     db.session.add(submission6)
     db.session.add(submission7)
+    db.session.commit()
+
+    submission1.toggle_upvote(user1.id)
+    submission1.toggle_upvote(user3.id)
+    submission1.toggle_upvote(user4.id)
+    submission2.toggle_upvote(user4.id)
+    submission2.toggle_upvote(user3.id)
+    submission3.toggle_upvote(user3.id)
+    submission4.toggle_upvote(user4.id)
+    submission5.toggle_upvote(user1.id)
+    submission1.make_winner()
     db.session.commit()
 
 if __name__ == "__main__":
