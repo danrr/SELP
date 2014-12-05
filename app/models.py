@@ -101,7 +101,7 @@ class Submission(db.Model):
         self.won = False
 
     def make_winner(self):
-        if not self.__class__.query.filter_by(post_id=self.post_id).all():
+        if not self.__class__.query.filter_by(post_id=self.post_id, won=True).all():
             # TODO: increase scores for author of the post, and submitters
             self.won = True
         else:
