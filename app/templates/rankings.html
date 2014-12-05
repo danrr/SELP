@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>{{ title }}</h2>
+    <table class="rankings">
+        <tr>
+            <th>
+                Rank
+            </th>
+            <th>
+                User
+            </th>
+            <th>
+                Score
+            </th>
+        </tr>
+        {% for user in users %}
+            <tr>
+                <td>
+                    {{ user.rank }}
+                </td>
+                <td>
+                    <a href="{{ url_for('user', username=user.username) }}">{{ user.username }}</a>
+                </td>
+                <td>
+                    {{ user.score }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

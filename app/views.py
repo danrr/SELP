@@ -139,7 +139,6 @@ def post(id):
 
     author = User.query.filter_by(id=post.user_id).one()
 
-
     if is_current_user(author.id):
         if request.args.get('edit', '') == 't':
             if post.is_archived():
@@ -229,16 +228,43 @@ def post(id):
                            **context
                            )
 
+
 @app.route('/upvote/', methods=['POST'])
 @login_required
 def upvote():
-    # TODO: not allow voting on closed posts.
+    # TODO: not allow voting on archived posts.
     if request.form["type"] == "submission":
         submission = Submission.query.filter_by(user_id=request.form["author_id"],
                                                 post_id=request.form["post_id"]).first()
         submission.toggle_upvote(g.user.id)
         db.session.commit()
     return jsonify()
+
+
+@app.route('/rankings/')
+def rankings():
+    users = User.query.order_by(User.score.desc()).all()
+    users_context = []
+    i = 0
+    while i < len(users):
+        #olympic rankings
+        users_context.append({
+            "username": users[i].username,
+            "score": users[i].score,
+            "rank": i + 1
+        })
+        i += 1
+        while i < len(users) and users[i-1].score == users[i].score:
+            users_context.append({
+                "username": users[i].username,
+                "score": users[i].score,
+                "rank": users_context[i - 1]["rank"]
+            })
+            i += 1
+
+    return render_template('rankings.html',
+                           title="rankings",
+                           users=users_context)
 
 
 #helpers
