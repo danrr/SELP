@@ -125,7 +125,15 @@ class Submission(db.Model):
 
     def make_winner(self):
         if not self.__class__.query.filter_by(post_id=self.post_id, won=True).all():
-            # TODO: increase scores for author of the post, and submitters
+            pool = 200 * self.post.difficulty
+            submissions = self.__class__.query.filter_by(post_id=self.post_id).all()
+            total_votes = 0
+            for submission in submissions:
+                total_votes += submission.count_upvotes()
+            for submission in submissions:
+                score = pool/2 * submission.count_upvotes()/total_votes
+                submission.submitter.increase_score(score)
+            self.submitter.increase_score(pool/2)
             self.won = True
         else:
             raise Exception('There is a winner already')

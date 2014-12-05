@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from app import db
-from mock import patch, Mock
+from mock import patch, Mock, call
 from app.models import User, Submission, Post
 from tests.base_test import BaseTest
 
@@ -130,7 +130,6 @@ class TestSubmissionModel(BaseTest):
         # uncomment when imgur upload is enabled
         # patch_imgur.assert_called_with('a/b/c', config=None, anon=True)
 
-    @patch('app.models.ImgurClient.upload_from_path', Mock())
     def test_submission_model_knows_user_upvoted(self):
         self.assertTrue(self.submission.has_user_upvoted(self.user1.id))
         self.assertFalse(self.submission.has_user_upvoted(self.user2.id))
@@ -155,7 +154,8 @@ class TestSubmissionModel(BaseTest):
         self.assertEqual(self.submission.count_upvotes(), 2)
 
     @patch('app.models.ImgurClient.upload_from_path', Mock())
-    def test_submission_model_can_make_winner(self):
+    @patch('app.models.User.increase_score')
+    def test_submission_model_can_make_winner(self, mock_increase_score):
         self.submission.make_winner()
         db.session.commit()
         self.assertTrue(self.submission.won)
@@ -163,3 +163,4 @@ class TestSubmissionModel(BaseTest):
         db.session.add(submission1)
         db.session.commit()
         self.assertRaises(Exception, submission1.make_winner)
+        mock_increase_score.assert_has_calls([call(100), call(100)])
