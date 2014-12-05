@@ -92,6 +92,20 @@ class TestPostModel(BaseTest):
         post = Post('Title', 'Body', 1, publish_time=date, difficulty=3)
         self.assertFalse(post.are_submissions_open())
 
+    def test_post_model_difficulty_string(self):
+        post = Post('Title', 'Body', 1, difficulty=1)
+        self.assertEqual(post.get_difficulty_string(), "Beginner")
+        post.difficulty = 2
+        self.assertEqual(post.get_difficulty_string(), "Novice")
+        post.difficulty = 3
+        self.assertEqual(post.get_difficulty_string(), "Intermediate")
+        post.difficulty = 4
+        self.assertEqual(post.get_difficulty_string(), "Hard")
+        post.difficulty = 5
+        self.assertEqual(post.get_difficulty_string(), "Expert")
+        post.difficulty = 99
+        self.assertEqual(post.get_difficulty_string(), "Intermediate")
+
 
 class TestSubmissionModel(BaseTest):
     @patch('app.models.ImgurClient.upload_from_path', Mock())

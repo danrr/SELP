@@ -77,6 +77,15 @@ class Post(db.Model):
     def is_closed(self):
         return self.is_visible() and not self.are_submissions_open()
 
+    def get_difficulty_string(self):
+        return {
+            1: "Beginner",
+            2: "Novice",
+            3: "Intermediate",
+            4: "Hard",
+            5: "Expert"
+        }.get(self.difficulty, "Intermediate")
+
     def __repr__(self):
         return '<Post {title}>'.format(title=self.title)
 
