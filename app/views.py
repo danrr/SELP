@@ -225,15 +225,31 @@ def post(id):
 
 
 @app.route('/upvote/', methods=['POST'])
-@login_required
 def upvote():
-    # TODO: not allow voting on archived posts.
     if request.form["type"] == "submission":
-        submission = Submission.query.filter_by(user_id=request.form["author_id"],
-                                                post_id=request.form["post_id"]).first()
-        submission.toggle_upvote(g.user.id)
-        db.session.commit()
-    return jsonify()
+        if is_user_logged_in():
+            post = Post.query.filter_by(id=request.form["post_id"]).first()
+            if post.is_visible() and not post.is_archived():
+                submission = Submission.query.filter_by(user_id=request.form["author_id"],
+                                                        post_id=request.form["post_id"]).first()
+                submission.toggle_upvote(g.user.id)
+                db.session.commit()
+                return jsonify({
+                    "success": True,
+                    "reason": None
+                })
+            else:
+                return jsonify({
+                    "success": False,
+                    "reason": "Can't vote on this post as it has been archived"  # also returned to request for post
+                                                                                 # that aren't visible but as it's not a
+                                                                                 # valid use case there's no need for
+                                                                                 # good user feedback
+                })
+    return jsonify({
+        "success": False,
+        "reason": "Please log in to vote"
+    })
 
 
 @app.route('/rankings/')
