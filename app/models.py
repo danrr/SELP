@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from mock import patch, Mock
 from imgurpython import ImgurClient
 from sqlalchemy import UniqueConstraint
+from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import db
 from app.config import imgur_client_id, imgur_client_secret
@@ -136,7 +137,7 @@ class Submission(db.Model):
             self.submitter.increase_score(pool/2)
             self.won = True
         else:
-            raise Exception('There is a winner already')
+            raise IntegrityError
 
     def toggle_upvote(self, user_id):
         user = User.query.filter_by(id=user_id).first()
