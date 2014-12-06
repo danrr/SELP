@@ -116,11 +116,25 @@ form {
     > div {
         margin-bottom: 10px;
     }
+
+    > input.btn {
+        margin-bottom: 10px;
+    }
+
 }
 
 .nav-right {
     float: left;
     @media (min-width:768px) {
         float: right;
+    }
+}
+
+ul#difficulty {
+    list-style-type: none;
+
+    > li {
+        display: inline-block;
+        margin-right: 10px;
     }
 }
