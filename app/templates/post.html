@@ -33,7 +33,7 @@
                         <span class="winner">Winner</span>
                         <span class="star"></span>
                         {% if post_closed and can_edit %}
-                            <a href="#">Choose as winner</a>
+                            <a href="?winner={{ submission.id }}">Choose as winner</a>
                         {% endif %}
                         <div class="upvote" >
                             <a {% if submission.user_upvoted %}class="on"{% endif %}>&#x25B2;</a>

@@ -1,5 +1,6 @@
 from datetime import date
 import os
+from sqlalchemy.exc import IntegrityError
 from werkzeug.utils import secure_filename
 from flask import render_template, redirect, flash, g, url_for, request, jsonify
 from flask.ext.login import login_user, current_user, logout_user, login_required
@@ -170,6 +171,16 @@ def post(id):
         if request.args.get('submit', '') == 1:
             flash('Cannot submit entry to own challenge')
             return reload_page()
+
+        winner = request.args.get('winner', '')
+        if winner:
+            submission = Submission.query.filter_by(id=winner).first()
+            try:
+                submission.make_winner()
+                db.session.commit()
+            except IntegrityError:
+                flash("There is a winner already")
+            return reload_page()
     else:
         if request.args.get('submit', '') == 1:
             if not is_user_logged_in():
@@ -213,6 +224,7 @@ def post(id):
     for submission in Submission.query.filter_by(post_id=post.id).all():
         author = User.query.filter_by(id=submission.user_id).one()
         context['submissions'] += [{
+            'id': submission.id,
             'url': submission.url,
             'text': submission.text,
             'author': author.username,
