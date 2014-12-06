@@ -163,3 +163,9 @@ class TestSubmissionModel(BaseTest):
         self.assertTrue(submission1.won)
         self.assertRaises(Exception, self.submission.make_winner)
         mock_increase_score.assert_has_calls([call(50), call(50), call(100), call(104)])
+
+    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    def test_submission_model_does_not_allow_multiple_submissions(self):
+        submission1 = Submission('a/b/c', 'abcdef', user_id=self.user1.id, post_id=self.post.id)
+        db.session.add(submission1)
+        self.assertRaises(Exception, db.session.commit)
