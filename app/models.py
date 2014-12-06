@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import math
 from mock import patch, Mock
 from imgurpython import ImgurClient
 from sqlalchemy import UniqueConstraint
@@ -129,12 +130,17 @@ class Submission(db.Model):
             pool = 200 * self.post.difficulty
             submissions = self.__class__.query.filter_by(post_id=self.post_id).all()
             total_votes = 0
+            # half of the score is distributed according to number of upvotes
             for submission in submissions:
                 total_votes += submission.count_upvotes()
             for submission in submissions:
                 score = pool/2 * submission.count_upvotes()/total_votes
                 submission.submitter.increase_score(score)
+            # the other half is given to the winner
             self.submitter.increase_score(pool/2)
+            # the author of the post gets score proportional to the interest (based on number of submission and upvotes)
+            score = int(pool * math.log(len(submissions) + 1, 10) + pool/10 * math.log(total_votes + 1, 10))
+            self.post.author.increase_score(score)
             self.won = True
         else:
             raise IntegrityError
