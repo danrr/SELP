@@ -64,17 +64,17 @@ class Post(db.Model):
         self.user_id = user_id
         self.difficulty = difficulty
         if not publish_time:
-            publish_time = datetime.today()
+            publish_time = datetime.now()
         self.publish_time = publish_time
 
     def is_visible(self):
-        return self.publish_time <= datetime.today()
+        return self.publish_time <= datetime.now()
 
     def is_archived(self):
         return self.is_closed() and any(submission.won for submission in self.submissions.all())
 
     def are_submissions_open(self):
-        return self.is_visible() and self.publish_time + timedelta(days=7) > datetime.today()
+        return self.is_visible() and self.publish_time + timedelta(days=7) > datetime.now()
 
     def is_closed(self):
         return self.is_visible() and not self.are_submissions_open()
