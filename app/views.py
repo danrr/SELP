@@ -216,7 +216,7 @@ def post(id):
             'author_id': author.id,
             'won': submission.won,
             'score': submission.count_upvotes(),
-            'user_upvoted': submission.has_user_upvoted(g.user.id)
+            'user_upvoted': is_user_logged_in() and submission.has_user_upvoted(g.user.id)
         }]
 
     return render_template('post.html',
