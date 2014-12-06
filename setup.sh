@@ -15,7 +15,7 @@ source env/bin/activate
 pip install -r requirements.txt
 
 echo "Compiling scss"
-scss app/static/app.scss app/static/app.css
+python -mscss < app/static/app.scss > app/static/app.css
 
 #node
 echo "Installing nvm"
