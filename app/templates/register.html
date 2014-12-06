@@ -10,7 +10,7 @@
         </div>
         <div>
             {{ form.email.label }}
-            {{ form.email(size=80, class="form-control", required="", autofocus="") }}
+            {{ form.email(size=80, class="form-control", required="") }}
             {% if form.email.errors %}
                  <ul class="alert alert-danger">
                      {% for error in form.email.errors %}
@@ -21,11 +21,11 @@
         </div>
         <div>
             {{ form.password.label }}
-            {{ form.password(size=80, class="form-control", required="", autofocus="") }}
+            {{ form.password(size=80, class="form-control", required="") }}
         </div>
         <div>
             {{ form.confirm.label }}
-            {{ form.confirm(size=80, class="form-control", required="", autofocus="") }}
+            {{ form.confirm(size=80, class="form-control", required="") }}
             {% if form.confirm.errors %}
                 <ul class="alert alert-danger">
                     {% for error in form.confirm.errors %}
