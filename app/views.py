@@ -118,6 +118,9 @@ def new_post():
 
 @app.route('/post/<int:id>/', methods=['GET', 'POST'])
 def post(id):
+    def reload_page():
+        return redirect(url_for('post', id=id))
+
     post = Post.query.filter_by(id=id).first()
     if post is None or not post.is_visible():
         flash('Post not found')
@@ -129,7 +132,7 @@ def post(id):
         if request.args.get('edit', '') == 1:
             if post.is_archived():
                 flash('Archived posts cannot be modified')
-                return redirect(url_for('post', id=id))
+                return reload_page()
 
             form = PostForm()
 
@@ -145,7 +148,7 @@ def post(id):
                         return redirect(url_for('post', id=id, edit=1))
                     post.publish_time = form.date.data
                 db.session.commit()
-                return redirect(url_for('post', id=id))
+                return reload_page()
 
             form.title.data = post.title
             form.body.data = post.body
@@ -159,14 +162,14 @@ def post(id):
         if request.args.get('delete', '') == 1:
             if post.is_archived():
                 flash('Archived posts cannot be deleted')
-                return redirect(url_for('post', id=id))
+                return reload_page()
             db.session.delete(post)
             db.session.commit()
             return redirect(url_for('home'))
 
         if request.args.get('submit', '') == 1:
             flash('Cannot submit entry to own challenge')
-            return redirect(url_for('post', id=id))
+            return reload_page()
     else:
         if request.args.get('submit', '') == 1:
             if not is_user_logged_in():
@@ -174,10 +177,10 @@ def post(id):
                 return redirect(url_for('login'))
             if Submission.query.filter_by(user_id=g.user.id, post_id=id).all():
                 flash("Submission already exists")
-                return redirect(url_for('post', id=id))
+                return reload_page()
             if not post.are_submissions_open():
                 flash('Submissions are not open for this post')
-                return redirect(url_for('post', id=id))
+                return reload_page()
 
             form = SubmissionForm()
             if form.validate_on_submit():
@@ -189,7 +192,7 @@ def post(id):
                 db.session.commit()
                 os.remove(path)
                 flash("Submission successful")
-                return redirect(url_for('post', id=id))
+                return reload_page()
 
             return render_template('submit.html',
                                    title='Submit entry',
