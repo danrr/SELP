@@ -1,12 +1,28 @@
-<div class="navigation">
-    <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('rankings') }}">Rankings</a>
-</div>
-
-<div class="login">
-    {%if g.user.is_authenticated() %}
-        <a href="{{ url_for('user', username=g.user.username) }}">Hello, {{ g.user.username }}!</a> <a href="{{ url_for('logout') }}">Logout</a>
-    {% else %}
-        Hello newcomer <a href="{{ url_for('login') }}">Login</a> <a href="{{ url_for('register') }}">Register</a>
-    {% endif %}
-</div>
+<nav role="navigation" class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="{{ url_for('home') }}" class="navbar-brand">Cooking challenge</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="nav navbar-nav">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('rankings') }}">Rankings</a></li>
+            </ul>
+            <ul class="nav navbar-nav nav-right">
+            {%if g.user.is_authenticated() %}
+                <li><a href="{{ url_for('user', username=g.user.username) }}"> Hello, {{ g.user.username }}!</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+                <li>Hello newcomer <a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
+            {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
