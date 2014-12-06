@@ -126,7 +126,7 @@ def post(id):
     author = User.query.filter_by(id=post.user_id).one()
 
     if is_current_user(author.id):
-        if request.args.get('edit', '') == 't':
+        if request.args.get('edit', '') == 1:
             if post.is_archived():
                 flash('Archived posts cannot be modified')
                 return redirect(url_for('post', id=id))
@@ -142,7 +142,7 @@ def post(id):
                 else:
                     if not form.date.data:
                         flash('You must input date if start now checkbox is deselected')
-                        return redirect(url_for('post', id=id, edit='t'))
+                        return redirect(url_for('post', id=id, edit=1))
                     post.publish_time = form.date.data
                 db.session.commit()
                 return redirect(url_for('post', id=id))
@@ -156,7 +156,7 @@ def post(id):
                                    title='Edit post',
                                    form=form)
 
-        if request.args.get('delete', '') == 't':
+        if request.args.get('delete', '') == 1:
             if post.is_archived():
                 flash('Archived posts cannot be deleted')
                 return redirect(url_for('post', id=id))
@@ -164,11 +164,11 @@ def post(id):
             db.session.commit()
             return redirect(url_for('home'))
 
-        if request.args.get('submit', '') == 't':
+        if request.args.get('submit', '') == 1:
             flash('Cannot submit entry to own challenge')
             return redirect(url_for('post', id=id))
     else:
-        if request.args.get('submit', '') == 't':
+        if request.args.get('submit', '') == 1:
             if not is_user_logged_in():
                 flash('Please log in to submit')
                 return redirect(url_for('login'))
