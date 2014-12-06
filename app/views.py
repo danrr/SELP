@@ -34,15 +34,15 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None:
-            flash('No such user')
+            flash('No such user', 'error')
             return redirect((url_for('register')))
 
         if not user.check_password(form.password.data):
-            flash('Password is incorrect')
+            flash('Password is incorrect', 'error')
             return redirect((url_for('login')))
 
         login_user(user, remember=form.remember_me.data)
-        flash('Welcome back, {user}'.format(user=form.username.data))
+        flash('Welcome back, {user}'.format(user=form.username.data), 'info')
         return redirect((url_for('home')))
     return render_template('login.html',
                            title='Sign In',
@@ -55,16 +55,16 @@ def register():
     if form.validate_on_submit():
         old_user = User.query.filter_by(username=form.username.data).first()
         if old_user is not None:
-            flash('User {user} already exists'.format(user=form.username.data))
+            flash('User {user} already exists'.format(user=form.username.data), 'error')
             return redirect((url_for('register')))
         old_user = User.query.filter_by(email=form.email.data).first()
         if old_user is not None:
-            flash('{email} already used'.format(email=form.email.data))
+            flash('{email} already used'.format(email=form.email.data), 'error')
             return redirect((url_for('register')))
         user = User(username=form.username.data, email=form.email.data, password=form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Please login to your new account'.format(user=form.username.data))
+        flash('Please login to your new account'.format(user=form.username.data), 'info')
         return redirect((url_for('login')))
     return render_template('register.html',
                            title='Register',
@@ -152,14 +152,14 @@ def post(id):
 
         if request.args.get('delete', '') == "1":
             if post.is_archived():
-                flash('Archived posts cannot be deleted')
+                flash('Archived posts cannot be deleted', 'error')
                 return reload_page()
             db.session.delete(post)
             db.session.commit()
             return redirect(url_for('home'))
 
         if request.args.get('submit', '') == "1":
-            flash('Cannot submit entry to own challenge')
+            flash('Cannot submit entry to own challenge', 'error')
             return reload_page()
 
         winner = request.args.get('winner', '')
@@ -169,18 +169,18 @@ def post(id):
                 submission.make_winner()
                 db.session.commit()
             except IntegrityError:
-                flash("There is a winner already")
+                flash("There is a winner already" 'error')
             return reload_page()
     else:
         if request.args.get('submit', '') == "1":
             if not is_user_logged_in():
-                flash('Please log in to submit')
+                flash('Please log in to submit', 'error')
                 return redirect(url_for('login'))
             if Submission.query.filter_by(user_id=g.user.id, post_id=id).all():
-                flash("Submission already exists")
+                flash('Submission already exists', 'error')
                 return reload_page()
             if not post.are_submissions_open():
-                flash('Submissions are not open for this post')
+                flash('Submissions are not open for this post', 'error')
                 return reload_page()
 
             form = SubmissionForm()
@@ -192,7 +192,7 @@ def post(id):
                 db.session.add(submission)
                 db.session.commit()
                 os.remove(path)
-                flash("Submission successful")
+                flash('Submission successful', 'info')
                 return reload_page()
 
             return render_template('submit.html',
