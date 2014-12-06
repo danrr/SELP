@@ -1,25 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Register</h1>
-    <form action="" method="post" name="register">
+    <form action="" method="post" name="login" class="form-signin" role="form">
+        <h2>Register</h2>
         {{ form.hidden_tag() }}
         <div>
             {{ form.username.label }}
-            {{ form.username(size=80) }}
-            {% if form.username.errors %}
-                 <ul class="errors">
-                     {% for error in form.username.errors %}
-                         <li>{{ error }}</li>
-                     {% endfor %}
-                 </ul>
-            {% endif %}
+            {{ form.username(size=80, class="form-control", required="", autofocus="") }}
         </div>
         <div>
             {{ form.email.label }}
-            {{ form.email(size=80) }}
+            {{ form.email(size=80, class="form-control", required="", autofocus="") }}
             {% if form.email.errors %}
-                 <ul class="errors">
+                 <ul class="alert alert-danger">
                      {% for error in form.email.errors %}
                          <li>{{ error }}</li>
                      {% endfor %}
@@ -28,26 +21,19 @@
         </div>
         <div>
             {{ form.password.label }}
-            {{ form.password(size=80) }}
-            {% if form.password.errors %}
-                 <ul class="errors">
-                     {% for error in form.password.errors %}
-                         <li>{{ error }}</li>
-                     {% endfor %}
-                 </ul>
-            {% endif %}
+            {{ form.password(size=80, class="form-control", required="", autofocus="") }}
         </div>
         <div>
             {{ form.confirm.label }}
-            {{ form.confirm(size=80) }}
+            {{ form.confirm(size=80, class="form-control", required="", autofocus="") }}
             {% if form.confirm.errors %}
-                <ul class="errors">
+                <ul class="alert alert-danger">
                     {% for error in form.confirm.errors %}
                         <li>{{ error }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
         </div>
-        <input type="submit" value="Register">
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Register">
     </form>
 {% endblock %}
