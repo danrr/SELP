@@ -84,11 +84,11 @@ class TestPostModel(BaseTest):
 
     @patch('app.models.Post.is_visible', Mock(return_value=True))
     def test_post_model_are_submissions_open(self):
-        date = datetime.utcnow() + timedelta(1)
+        date = datetime.today() - timedelta(1)
         post = Post('Title', 'Body', 1, publish_time=date, difficulty=3)
         self.assertTrue(post.are_submissions_open())
 
-        date = datetime.utcnow() + timedelta(8)
+        date = datetime.today() - timedelta(8)
         post = Post('Title', 'Body', 1, publish_time=date, difficulty=3)
         self.assertFalse(post.are_submissions_open())
 
