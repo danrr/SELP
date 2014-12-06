@@ -4,6 +4,7 @@ db_repository
 .idea
 README.html
 *.js
+*.js.map
 .nvm
 *.css
 *.db
