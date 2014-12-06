@@ -6,6 +6,10 @@ ul.alert {
     margin-top: 5px;
     padding: 7px 10px;
     list-style-type: none;
+
+    button.close {
+        right: 0;
+    }
 }
 
 ul.submissions {
