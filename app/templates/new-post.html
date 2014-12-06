@@ -1,36 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>{{title}}</h1>
-    <form action="" method="post" name="new-post">
+    <form action="" method="post" name="post" class="form-post" role="form">
+        <h1>{{title}}</h1>
         {{ form.hidden_tag() }}
         <div>
             {{ form.title.label }}
-            {{ form.title(size=80) }}
-            {% if form.title.errors %}
-                 <ul class="errors">
-                     {% for error in form.title.errors %}
-                         <li>{{ error }}</li>
-                     {% endfor %}
-                 </ul>
-            {% endif %}
+            {{ form.title(size=80, class="form-control", required="", autofocus="") }}
         </div>
         <div>
             {{ form.body.label }}
-            {{ form.body(rows=30,cols=100) }}
-            {% if form.body.errors %}
-                 <ul class="errors">
-                     {% for error in form.body.errors %}
-                         <li>{{ error }}</li>
-                     {% endfor %}
-                 </ul>
-            {% endif %}
+            {{ form.body(rows=20, cols=100, class="form-control", required="") }}
         </div>
         <div>
             {{ form.difficulty.label }}
-            {{ form.difficulty() }}
+            {{ form.difficulty(required="") }}
             {% if form.difficulty.errors %}
-                 <ul class="errors">
+                 <ul class="alert alert-danger">
                      {% for error in form.difficulty.errors %}
                          <li>{{ error }}</li>
                      {% endfor %}
@@ -38,27 +24,16 @@
             {% endif %}
         </div>
         <div>
-            {{ form.startnow.label }}
-            {{ form.startnow() }}
-            {% if form.startnow.errors %}
-                 <ul class="errors">
-                     {% for error in form.startnow.errors %}
+            {{ form.start_time.label }}
+            {{ form.start_time(id="datepicker", class="form-control", required="", **{"data-date-format": "DD-MM-YYYY HH:mm"}) }}
+            {% if form.start_time.errors %}
+                 <ul class="alert alert-danger">
+                     {% for error in form.start_time.errors %}
                          <li>{{ error }}</li>
                      {% endfor %}
                  </ul>
             {% endif %}
         </div>
-        <div>
-            {{ form.date.label }}
-            {{ form.date() }}
-            {% if form.date.errors %}
-                 <ul class="errors">
-                     {% for error in form.date.errors %}
-                         <li>{{ error }}</li>
-                     {% endfor %}
-                 </ul>
-            {% endif %}
-        </div>
-        <input type="submit" value="Post">
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Post">
     </form>
 {% endblock %}

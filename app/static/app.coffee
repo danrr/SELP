@@ -21,5 +21,12 @@ load = ->
                 else
                     alert(data.reason)
 
+    $('#datepicker').datetimepicker(
+        sideBySide: true
+        minDate: moment()
+        useSeconds: false
+        defaultDate: moment()
+    )
+
 $(document).ready load
 $(document).on "page:load", load

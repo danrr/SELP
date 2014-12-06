@@ -1,7 +1,7 @@
 from flask.ext.wtf import Form
-from flask.ext.wtf.file import FileRequired, FileAllowed, FileField
-from wtforms import StringField, BooleanField, PasswordField, DateField, TextAreaField, RadioField
-from wtforms.validators import DataRequired, Email, EqualTo, Optional
+from flask.ext.wtf.file import FileRequired, FileField
+from wtforms import StringField, BooleanField, PasswordField, TextAreaField, RadioField, DateTimeField
+from wtforms.validators import DataRequired, Email, EqualTo
 
 
 class LoginForm(Form):
@@ -20,12 +20,11 @@ class RegistrationForm(Form):
 class PostForm(Form):
     title = StringField('Title:', validators=[DataRequired()])
     body = TextAreaField('Body:', validators=[DataRequired()])
-    startnow = BooleanField('Start now', validators=[Optional()], default=True)
     difficulty = RadioField("Difficulty:",
                             choices=[(1, "Beginner"), (2, "Novice"), (3, "Intermediate"), (4, "Hard"), (5, "Expert")],
                             coerce=int,
                             validators=[DataRequired()])
-    date = DateField('Start date: (if not now)', validators=[Optional()])
+    start_time = DateTimeField('Start Time:', validators=[DataRequired()], format='%d-%m-%Y %H:%M')
 
 
 class SubmissionForm(Form):

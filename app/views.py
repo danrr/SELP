@@ -101,14 +101,11 @@ def user(username):
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
-        if form.startnow.data:
-            date = None
-        else:
-            if not form.date.data:
-                flash('You must input date if start now checkbox is deselected')
-                return redirect(url_for('new_post'))
-            date = form.date.data
-        post = Post(form.title.data, form.body.data, g.user.id, publish_time=date, difficulty=form.difficulty.data)
+        post = Post(title=form.title.data,
+                    body=form.body.data,
+                    user_id=g.user.id,
+                    publish_time=form.start_time.data,
+                    difficulty=form.difficulty.data)
         db.session.add(post)
         db.session.commit()
         return redirect((url_for('home')))
@@ -130,7 +127,7 @@ def post(id):
     author = User.query.filter_by(id=post.user_id).one()
 
     if is_current_user(author.id):
-        if request.args.get('edit', '') == 1:
+        if request.args.get('edit', '') == "1":
             if post.is_archived():
                 flash('Archived posts cannot be modified')
                 return reload_page()
@@ -141,26 +138,19 @@ def post(id):
                 post.title = form.title.data
                 post.body = form.body.data
                 post.difficulty = form.difficulty.data
-                if form.startnow.data:
-                    post.publish_time = date.today()
-                else:
-                    if not form.date.data:
-                        flash('You must input date if start now checkbox is deselected')
-                        return redirect(url_for('post', id=id, edit=1))
-                    post.publish_time = form.date.data
+                post.publish_time = form.start_time.data
                 db.session.commit()
                 return reload_page()
 
             form.title.data = post.title
             form.body.data = post.body
-            form.startnow.data = False
-            form.date.data = post.publish_time
-            form.difficulty.data = post.difficulty.data
+            form.start_time.data = post.publish_time
+            form.difficulty.data = post.difficulty
             return render_template('new-post.html',
                                    title='Edit post',
                                    form=form)
 
-        if request.args.get('delete', '') == 1:
+        if request.args.get('delete', '') == "1":
             if post.is_archived():
                 flash('Archived posts cannot be deleted')
                 return reload_page()
@@ -168,7 +158,7 @@ def post(id):
             db.session.commit()
             return redirect(url_for('home'))
 
-        if request.args.get('submit', '') == 1:
+        if request.args.get('submit', '') == "1":
             flash('Cannot submit entry to own challenge')
             return reload_page()
 
@@ -182,7 +172,7 @@ def post(id):
                 flash("There is a winner already")
             return reload_page()
     else:
-        if request.args.get('submit', '') == 1:
+        if request.args.get('submit', '') == "1":
             if not is_user_logged_in():
                 flash('Please log in to submit')
                 return redirect(url_for('login'))

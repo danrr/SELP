@@ -104,11 +104,16 @@ ul.submissions {
     }
 }
 
-.form-signin {
-    max-width: 320px;
+form {
     margin: 0 auto;
 
-    div {
+    &.form-signin {
+        max-width: 320px;
+    }
+    &.form-post {
+        max-width: 720px;
+    }
+    > div {
         margin-bottom: 10px;
     }
 }
