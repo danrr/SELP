@@ -178,11 +178,19 @@ class TestPostModel(BaseTest):
         post1 = Post('Title', 'Body', 1, difficulty=1)
         self.assertEqual(post.tags.all(), [])
         tag = Tag("cake")
+        # it returns the tag when added
         self.assertEqual(post.add_tag("cake").name, tag.name)
+        # the tag is in the tag list
         tag = Tag.query.filter_by(name="cake").first()
         self.assertEqual(post.tags.all(), [tag])
+        # it adds the same tag to multiple posts
         post1.add_tag("cake")
         self.assertEqual(post1.tags.all(), [tag])
+        # it doesn't add the same tag to the same post multiple times
+        r = post1.add_tag("cake")
+        self.assertEqual(r, None)
+        self.assertEqual(post1.tags.all(), [tag])
+        # it removes tags
         post1.remove_tag("cake")
         self.assertEqual(post1.tags.all(), [])
 
