@@ -41,6 +41,20 @@ load = ->
             success: ->
                 $el.parent().remove()
 
+    $('.more-tags').on 'click', (e) ->
+        post_id = $('div.post').data('post-id')
+        tag = prompt("tag")
+        if tag == ""
+            alert("Please supply a tag name")
+        else
+            $.ajax
+                url: "/addtag/"
+                type: "POST"
+                data:
+                    post_id: post_id
+                    tag: tag
+                success: (data) ->
+                    $('ul.tags').append(data.html)
 
 
 $(document).ready load

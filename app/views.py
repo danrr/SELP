@@ -198,11 +198,11 @@ def post(id):
                                    title='Submit entry',
                                    form=form)
 
-    can_edit = is_current_user(post.author.id) and not post.is_archived()
     context = {
         'post': post,
         'title': post.title,
-        'can_edit': can_edit,
+        'is_author': is_current_user(post.author.id),
+        'can_edit': is_current_user(post.author.id) and not post.is_archived(),
         'submissions': []
     }
 
@@ -276,15 +276,32 @@ def rankings():
                            title="rankings",
                            users=users_context)
 
+
 @app.route('/removetag/', methods=["POST"])
 def remove_tag():
     post = Post.query.filter_by(id=request.form["post_id"]).first()
     if post is not None and is_current_user(post.author.id):
         post.remove_tag(request.form["tag"])
         db.session.commit()
+        return jsonify()
     else:
         return jsonify(), 403
-    return jsonify()
+
+
+@app.route('/addtag/', methods=["POST"])
+def add_tag():
+    post = Post.query.filter_by(id=request.form["post_id"]).first()
+    if post is not None:
+        tag = post.add_tag(request.form["tag"])
+        db.session.commit()
+        return jsonify({
+            "html": render_template("partials/_tag.html",
+                                    tag=tag,
+                                    is_author=is_current_user(post.author.id),)
+        })
+    else:
+        return jsonify(), 403
+
 
 #helpers
 def is_user_logged_in():
