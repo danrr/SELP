@@ -28,7 +28,7 @@ load = ->
         defaultDate: moment()
     )
 
-    $('.remove-tag').on 'click', (e) ->
+    $('.tags').on 'click','.remove-tag', (e) ->
         $el = $(e.currentTarget)
         post_id = $('div.post').data('post-id')
         tag = $el.parent().data("tag-name")
