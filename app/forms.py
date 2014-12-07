@@ -32,3 +32,6 @@ class SubmissionForm(Form):
     image = FileField('Image:', validators=[
         FileRequired(),
     ])
+
+class SearchForm(Form):
+    search = StringField('Search', validators=[DataRequired()])

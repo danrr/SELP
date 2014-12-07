@@ -5,8 +5,9 @@ from imgurpython import ImgurClient
 from sqlalchemy import UniqueConstraint, exists, and_
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
+import flask.ext.whooshalchemy as whooshalchemy
 from werkzeug.security import check_password_hash, generate_password_hash
-from app import db
+from app import db, app
 from app.config import imgur_client_id, imgur_client_secret
 
 upvotes = db.Table("upvotes",
@@ -61,6 +62,7 @@ class User(db.Model):
 
 
 class Post(db.Model):
+    __searchable__ = ['title', 'body']
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     body = db.Column(db.Text)
@@ -141,6 +143,8 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post {title}>'.format(title=self.title)
+
+whooshalchemy.whoosh_index(app, Post)
 
 
 class Submission(db.Model):

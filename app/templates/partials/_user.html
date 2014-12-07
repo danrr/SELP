@@ -15,6 +15,16 @@
             <li><a href="{{ url_for('rankings') }}">Rankings</a></li>
             </ul>
             <ul class="nav navbar-nav nav-right">
+            <li>
+                <form action="{{ url_for('search') }}" method="post" name="search" class="input-group">
+                    {{ g.search_form.hidden_tag() }}
+                    {{ g.search_form.search(size=20, class="form-control", required="",
+                                            title="Search syntax: <terms>; difficulty:<difficulty> tag:<tag>") }}
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">&#x1f50d;</button>
+                    </span>
+                </form>
+            </li>
             {%if g.user.is_authenticated() %}
                 <li><a href="{{ url_for('user', username=g.user.username) }}"> Hello, {{ g.user.username }}!</a></li>
                 <li><a href="{{ url_for('logout') }}">Logout</a></li>
