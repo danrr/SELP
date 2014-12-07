@@ -225,7 +225,7 @@ def post(id):
 
 @app.route('/upvote/', methods=['POST'])
 def upvote():
-    if request.form["type"] == "submission":
+    if request.form["type"] == "submission":  # type can be used for upvoting other things, not just submissions
         if is_user_logged_in():
             post = Post.query.filter_by(id=request.form["post_id"]).first()
             if post.is_visible() and not post.is_archived():
