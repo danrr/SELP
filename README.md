@@ -7,7 +7,7 @@ s1244166
 To install run *source setup.sh*. It will install a virtualenv with dependencies and a node.js instance with nvm, compile coffee-script and scss, and initialize the databases.
 
 ###Run###
-Nothing to run just yet
+To run the app run *source setup.sh*. This will initialize the app on port 5000.
 
 ###Proposal###
 
