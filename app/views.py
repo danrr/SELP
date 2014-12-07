@@ -90,9 +90,7 @@ def user(username):
 
     context = {
         'title': 'Cooking challenge',
-        'rank': user.get_rank(),
-        'score': user.score,
-        'posts': user.posts
+        'user': user,
     }
 
     return render_template('userpage.html', **context)

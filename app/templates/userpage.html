@@ -1,23 +1,38 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>{{ g.user.username }}'s userpage</h1>
+    <h1>{{ user.username }}'s userpage</h1>
     <div class="ranking">
         <span class="rank">
-            Rank: {{ rank }}
+            Rank: {{ user.get_rank() }}
         </span>
         <span class="score">
-            Score: {{ score }}
+            Score: {{ user.score }}
         </span>
     </div>
-    {% for post in posts %}
+    <h2> Posts </h2>
+    {% for post in user.posts[:5] %}
         <div class="post">
-            <h2 class="post-title">
+            <h3 class="post-title">
                 <a href="{{ url_for("post", id=post.id) }}">{{post.title}}</a>
-            </h2>
+            </h3>
             <span class="difficulty-{{ post.difficulty }}"> {{ post.get_difficulty_string() }}</span>
             <div class="content">
                 {{post.body}}
             </div>
         </div>
     {% endfor %}
+    <a>Show more</a>
+    <h2> Submissions </h2>
+    <ul class="submissions">
+        {% for submission in user.submissions[:5] %}
+            <li {% if submission.won %}class="winning-submission"{% endif %}>
+                Post: <a href="{{ url_for('post', id=submission.post.id) }}">{{ submission.post.title }}</a>
+                <span class="winner">Winner</span>
+                <span class="star"></span>
+                <img src="{{submission.url}}" alt="submission by {{ submission.author }}" width="300px" height="300px">
+                <span>{{ submission.text }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+    <a>Show more</a>
 {% endblock %}
