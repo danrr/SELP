@@ -7,3 +7,6 @@ SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
 imgur_client_id = 'c82b0dfcd28ce0d'
 imgur_client_secret = '321511b8f8dae2b5d9aa89eb3afcbbff392356a4'
+
+WHOOSH_BASE = os.path.join(basedir, 'search.db')
+MAX_SEARCH_RESULTS = 50
