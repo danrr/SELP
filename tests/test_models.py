@@ -92,6 +92,73 @@ class TestPostModel(BaseTest):
         post = Post('Title', 'Body', 1, publish_time=date, difficulty=3)
         self.assertFalse(post.are_submissions_open())
 
+    def test_post_model_get_visible(self):
+        date = datetime.today() + timedelta(1)
+        post = Post('Title', 'Body', 1, publish_time=date, difficulty=3)
+        db.session.add(post)
+        db.session.commit()
+        self.assertEqual(Post.get_visible_posts(), [])
+
+        date = datetime.today() - timedelta(1)
+        post1 = Post('Title1', 'Body', 2, publish_time=date, difficulty=3)
+        db.session.add(post1)
+        db.session.commit()
+        self.assertEqual(Post.get_visible_posts(), [post1])
+
+    def test_post_model_get_open(self):
+        date = datetime.today() + timedelta(1)
+        post = Post('Title', 'Body', 1, publish_time=date, difficulty=3)
+        db.session.add(post)
+        db.session.commit()
+        self.assertEqual(Post.get_open_posts(), [])
+
+        date = datetime.today() - timedelta(10)
+        post1 = Post('Title', 'Body', 1, publish_time=date, difficulty=3)
+        db.session.add(post1)
+        db.session.commit()
+        self.assertEqual(Post.get_open_posts(), [])
+
+        date = datetime.today() - timedelta(1)
+        post2 = Post('Title1', 'Body', 1, publish_time=date, difficulty=3)
+        db.session.add(post2)
+        db.session.commit()
+        self.assertEqual(Post.get_open_posts(), [post2])
+
+    def test_post_model_get_closed(self):
+        date = datetime.today() + timedelta(1)
+        post = Post('Title', 'Body', 1, publish_time=date, difficulty=3)
+        db.session.add(post)
+        db.session.commit()
+        self.assertEqual(Post.get_open_posts(), [])
+
+        date = datetime.today() - timedelta(10)
+        post1 = Post('Title1', 'Body', 1, publish_time=date, difficulty=3)
+        db.session.add(post1)
+        db.session.commit()
+        self.assertEqual(Post.get_open_posts(), [])
+
+        date = datetime.today() - timedelta(1)
+        post2 = Post('Title', 'Body', 1, publish_time=date, difficulty=3)
+        db.session.add(post2)
+        db.session.commit()
+        self.assertEqual(Post.get_open_posts(), [post2])
+
+    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    def test_post_model_get_archived(self):
+        user = User('a', 'a@a.com', '12312')
+        db.session.add(user)
+        db.session.commit()
+        date = datetime.today() - timedelta(10)
+        post = Post('Title', 'Body', user_id=user.id, publish_time=date, difficulty=3)
+        db.session.add(post)
+        db.session.commit()
+        self.assertEqual(Post.get_archived_posts(), [])
+        submission = Submission('a/b/c', 'asdf', post_id=post.id, user_id=user.id)
+        submission.won = True
+        db.session.add(submission)
+        db.session.commit()
+        self.assertEqual(Post.get_archived_posts(), [post])
+
     def test_post_model_difficulty_string(self):
         post = Post('Title', 'Body', 1, difficulty=1)
         self.assertEqual(post.get_difficulty_string(), "Beginner")

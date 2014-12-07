@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import math
 from mock import patch, Mock
 from imgurpython import ImgurClient
-from sqlalchemy import UniqueConstraint
+from sqlalchemy import UniqueConstraint, exists, and_
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import db
@@ -70,14 +70,36 @@ class Post(db.Model):
     def is_visible(self):
         return self.publish_time <= datetime.now()
 
+    @classmethod
+    def get_visible_posts(cls, start=0, end=5):
+        return cls.query.filter(cls.publish_time <= datetime.now()).order_by(Post.id.desc()).limit(end)[start:]
+
     def is_archived(self):
         return self.is_closed() and any(submission.won for submission in self.submissions.all())
+
+    @classmethod
+    def get_archived_posts(cls, start=0, end=5):
+        return cls.query.join(Submission).filter(cls.publish_time <= datetime.now(),
+                                                 Submission.won,
+                                                 Submission.post_id == cls.id).order_by(Post.id.desc()).limit(end)[start:]
 
     def are_submissions_open(self):
         return self.is_visible() and self.publish_time + timedelta(days=7) > datetime.now()
 
+    @classmethod
+    def get_open_posts(cls, start=0, end=5):
+        return cls.query.filter(cls.publish_time <= datetime.now(),
+                                cls.publish_time > (datetime.now() - timedelta(days=7))
+                                ).order_by(Post.id.desc()).limit(end)[start:]
+
     def is_closed(self):
         return self.is_visible() and not self.are_submissions_open()
+
+    @classmethod
+    def get_closed_posts(cls, start=0, end=5):
+        return db.session.query(cls).filter(cls.publish_time <= datetime.now() - timedelta(days=7),
+                                            ~exists().where(and_(cls.id == Submission.post_id,
+                                                               Submission.won))).limit(end)[start:]
 
     def get_difficulty_string(self):
         return {
