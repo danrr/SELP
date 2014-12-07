@@ -24,25 +24,25 @@
                 <a href="?submit=1">Submit</a>
             </div>
         {% endif %}
-
-        <h3>Submissions</h3>
-        <ul class="submissions" data-post-id="{{ post.id }}">
-            {% for submission in submissions %}
-                <li data-author-id="{{ submission.author_id }}" {% if submission.won %}class="winning-submission"{% endif %}>
-                    <span class="winner">Winner</span>
-                    <span class="star"></span>
-                    {% if post.is_closed() and can_edit %}
-                        <a href="?winner={{ submission.id }}">Choose as winner</a>
-                    {% endif %}
-                    <div class="upvote" >
-                        <a {% if submission.user_upvoted %}class="on"{% endif %}>&#x25B2;</a>
-                        <span>{{submission.score}}</span>
-                    </div>
-                    <a href="{{ url_for('user', username=submission.author) }}">{{ submission.author }}</a>
-                    <img src="{{submission.url}}" alt="submission by {{ submission.author }}" width="300px" height="300px">
-                    <span>{{ submission.text }}</span>
-                </li>
-            {% endfor %}
-        </ul>
     </div>
+
+    <h3>Submissions</h3>
+    <ul class="submissions" data-post-id="{{ post.id }}">
+        {% for submission in submissions %}
+            <li data-author-id="{{ submission.author_id }}" {% if submission.won %}class="winning-submission"{% endif %}>
+                <span class="winner">Winner</span>
+                <span class="star"></span>
+                {% if post.is_closed() and can_edit %}
+                    <a href="?winner={{ submission.id }}">Choose as winner</a>
+                {% endif %}
+                <div class="upvote" >
+                    <a {% if submission.user_upvoted %}class="on"{% endif %}>&#x25B2;</a>
+                    <span>{{submission.score}}</span>
+                </div>
+                <a href="{{ url_for('user', username=submission.author) }}">{{ submission.author }}</a>
+                <img src="{{submission.url}}" alt="submission by {{ submission.author }}" width="300px" height="300px">
+                <span>{{ submission.text }}</span>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}

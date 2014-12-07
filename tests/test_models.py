@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from app import db
 from mock import patch, Mock, call
-from app.models import User, Submission, Post
+from app.models import User, Submission, Post, Tag
 from tests.base_test import BaseTest
 
 
@@ -173,6 +173,17 @@ class TestPostModel(BaseTest):
         post.difficulty = 99
         self.assertEqual(post.get_difficulty_string(), "Intermediate")
 
+    def test_post_model_can_add_and_remove_tag(self):
+        post = Post('Title', 'Body', 1, difficulty=1)
+        post1 = Post('Title', 'Body', 1, difficulty=1)
+        self.assertEqual(post.tags.all(), [])
+        post.add_tag("cake")
+        tag = Tag.query.filter_by(name="cake").first()
+        self.assertEqual(post.tags.all(), [tag])
+        post1.add_tag("cake")
+        self.assertEqual(post1.tags.all(), [tag])
+        post1.remove_tag("cake")
+        self.assertEqual(post1.tags.all(), [])
 
 class TestSubmissionModel(BaseTest):
     @patch('app.models.ImgurClient.upload_from_path', Mock())

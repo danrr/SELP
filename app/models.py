@@ -4,9 +4,20 @@ from mock import patch, Mock
 from imgurpython import ImgurClient
 from sqlalchemy import UniqueConstraint, exists, and_
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import db
 from app.config import imgur_client_id, imgur_client_secret
+
+upvotes = db.Table("upvotes",
+                   db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+                   db.Column('submission_id', db.Integer, db.ForeignKey('submission.id'))
+                   )
+
+tags = db.Table('tags',
+                db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
+                db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
+                )
 
 
 class User(db.Model):
@@ -57,6 +68,7 @@ class Post(db.Model):
     publish_time = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     submissions = db.relationship('Submission', backref='post', lazy='dynamic')
+    tags = db.relationship('Tag', secondary=tags, backref='posts', lazy='dynamic')
 
     def __init__(self, title, body, user_id, difficulty, publish_time=None):
         self.title = title
@@ -110,14 +122,25 @@ class Post(db.Model):
             5: "Expert"
         }.get(self.difficulty, "Intermediate")
 
+    def add_tag(self, name):
+        try:
+            tag = Tag.query.filter(Tag.name == name).one()
+        except NoResultFound:
+            tag = Tag(name)
+            db.session.add(tag)
+            db.session.commit()
+        self.tags.append(tag)
+        db.session.commit()
+
+    def remove_tag(self, name):
+        tag = Tag.query.filter_by(name=name).first()
+        self.tags.remove(tag)
+        db.session.commit()
+        if not tag.posts:
+            db.session.delete(tag)
+
     def __repr__(self):
         return '<Post {title}>'.format(title=self.title)
-
-
-upvotes = db.Table("upvotes",
-                   db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
-                   db.Column('submission_id', db.Integer, db.ForeignKey('submission.id'))
-                   )
 
 
 class Submission(db.Model):
@@ -187,3 +210,13 @@ class Submission(db.Model):
                                                                               post_id=self.post_id,
                                                                               url=self.url,
                                                                               text=self.text)
+
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(32), unique=True)
+
+    def __init__(self, name):
+        self.name = name
+    def __repr__(self):
+        return "<Tag {name}>".format(name=self.name)
