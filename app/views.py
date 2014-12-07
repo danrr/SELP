@@ -1,16 +1,19 @@
+from app.config import MAX_SEARCH_RESULTS
+import re
 import os
 from sqlalchemy.exc import IntegrityError
 from werkzeug.utils import secure_filename
 from flask import render_template, redirect, flash, g, url_for, request, jsonify
 from flask.ext.login import login_user, current_user, logout_user, login_required
 from app import app, login_manager, db
-from app.forms import LoginForm, RegistrationForm, PostForm, SubmissionForm
+from app.forms import LoginForm, RegistrationForm, PostForm, SubmissionForm, SearchForm
 from app.models import User, Post, Submission
 
 
 @app.before_request
 def before_request():
     g.user = current_user
+    g.search_form = SearchForm()
 
 
 @app.route("/", methods=["GET"])
@@ -306,6 +309,56 @@ def add_tag():
             })
     else:
         return jsonify(), 403
+
+
+@app.route('/search/', methods=["POST"])
+def search():
+    if not g.search_form.validate_on_submit():
+        return redirect(url_for('index'))
+    full_query = g.search_form.search.data
+
+    difficulty = re.search("(?<=difficulty:)\s*(beginner|intermediate|novice|hard|expert)", full_query, flags=re.IGNORECASE)
+    if difficulty:
+        difficulty = difficulty.group(0)
+    query = re.sub("difficulty:\s*(beginner|intermediate|novice|hard|expert)", "", full_query, flags=re.IGNORECASE)
+
+    tag = re.search("(?<=tag:)\s*[a-z0-9]+", query, flags=re.IGNORECASE)
+    if tag:
+        tag = tag.group(0)
+    query = re.sub("tag:\s*[a-z0-9]+", "", query, flags=re.IGNORECASE)
+
+    query = re.sub("\s+$", "", query)
+
+    return redirect(url_for('search_results', query=query, difficulty=difficulty, tag=tag))
+
+
+@app.route('/search_results/')
+@login_required
+def search_results():
+    query_string = ""
+    query = request.args.get("query")
+    if query:
+        results = Post.query.whoosh_search(query, MAX_SEARCH_RESULTS).all()
+        query_string = query
+    else:
+        results = Post.query.limit(MAX_SEARCH_RESULTS)
+    tag = request.args.get("tag")
+    if tag:
+        results = [result for result in results if any(tag == t.name for t in result.tags.all())]
+        if query_string:
+            query_string += " "
+        query_string += "tag:" + tag
+    difficulty = request.args.get("difficulty")
+    if difficulty:
+        results = [result for result in results if result.get_difficulty_string().lower() == difficulty]
+        if query_string:
+            query_string += " "
+        query_string += "difficulty:" + difficulty
+    results = results[:5]
+    g.search_form.search.data = query_string
+    return render_template('search-results.html',
+                           title="Search",
+                           posts=results)
 
 
 #helpers
