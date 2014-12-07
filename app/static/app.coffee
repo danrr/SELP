@@ -2,7 +2,7 @@ load = ->
     $('.upvote').on "click", "a", (e) ->
         $el = $ e.currentTarget
         author_id = $el.parents('li').data('author-id')
-        post_id = $el.parents('ul').data('post-id')
+        post_id = $('div.post').data('post-id')
         $.ajax
             url: "/upvote/"
             type: "POST"
@@ -27,6 +27,21 @@ load = ->
         useSeconds: false
         defaultDate: moment()
     )
+
+    $('.remove-tag').on 'click', (e) ->
+        $el = $(e.currentTarget)
+        post_id = $('div.post').data('post-id')
+        tag = $el.parent().data("tag-name")
+        $.ajax
+            url: "/removetag/"
+            type: "POST"
+            data:
+                post_id: post_id
+                tag: tag
+            success: ->
+                $el.parent().remove()
+
+
 
 $(document).ready load
 $(document).on "page:load", load

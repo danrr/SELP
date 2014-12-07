@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="post">
+    <div class="post" data-post-id="{{ post.id }}">
         <h2 class="post-title">{{ post.title }}</h2>
         <span class="difficulty-{{ post.difficulty }}"> {{ post.get_difficulty_string() }}</span>
         {% if can_edit %}
@@ -14,9 +14,9 @@
         {% if post.tags %}
             <ul class="tags">
             {% for tag in post.tags %}
-                <li>{{ tag.name }}
+                <li data-tag-name="{{ tag.name }}">{{ tag.name }}
                     {% if can_edit %}
-                        <span aria-hidden="true" class="glyphicon glyphicon-remove"></span>
+                        <span aria-hidden="true" class="remove-tag glyphicon glyphicon-remove" title="Remove tag"></span>
                     {% endif %}
                 </li>
             {% endfor %}
@@ -39,7 +39,7 @@
     </div>
 
     <h3>Submissions</h3>
-    <ul class="submissions" data-post-id="{{ post.id }}">
+    <ul class="submissions">
         {% for submission in submissions %}
             <li data-author-id="{{ submission.author_id }}" {% if submission.won %}class="winning-submission"{% endif %}>
                 <span class="winner">Winner</span>

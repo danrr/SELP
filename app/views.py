@@ -276,6 +276,15 @@ def rankings():
                            title="rankings",
                            users=users_context)
 
+@app.route('/removetag/', methods=["POST"])
+def remove_tag():
+    post = Post.query.filter_by(id=request.form["post_id"]).first()
+    if post is not None and is_current_user(post.author.id):
+        post.remove_tag(request.form["tag"])
+        db.session.commit()
+    else:
+        return jsonify(), 403
+    return jsonify()
 
 #helpers
 def is_user_logged_in():
