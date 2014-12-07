@@ -1,3 +1,4 @@
+//General
 body {
     padding-top: 50px;
 }
@@ -9,6 +10,63 @@ ul.alert {
 
     button.close {
         right: 0;
+    }
+}
+
+.nav-right {
+    float: left;
+    @media (min-width:768px) {
+        float: right;
+    }
+}
+
+//Forms
+
+form {
+    margin: 0 auto;
+
+    &.form-signin {
+        max-width: 320px;
+    }
+    &.form-post {
+        max-width: 720px;
+    }
+    > div {
+        margin-bottom: 10px;
+    }
+
+    > input.btn {
+        margin-bottom: 10px;
+    }
+
+}
+
+ul#difficulty {
+    list-style-type: none;
+
+    > li {
+        display: inline-block;
+        margin-right: 10px;
+    }
+}
+
+// Post pages
+
+.upvote {
+    display: inline-block;
+
+    a {
+        cursor: pointer;
+        color: gray;
+
+        &:hover {
+            color: red;
+        }
+
+        &.on {
+          color: orange;
+        }
+
     }
 }
 
@@ -83,58 +141,5 @@ ul.submissions {
 
     img {
         display: block;
-    }
-}
-
-.upvote {
-    display: inline-block;
-
-    a {
-        cursor: pointer;
-        color: gray;
-
-        &:hover {
-            color: red;
-        }
-
-        &.on {
-          color: orange;
-        }
-
-    }
-}
-
-form {
-    margin: 0 auto;
-
-    &.form-signin {
-        max-width: 320px;
-    }
-    &.form-post {
-        max-width: 720px;
-    }
-    > div {
-        margin-bottom: 10px;
-    }
-
-    > input.btn {
-        margin-bottom: 10px;
-    }
-
-}
-
-.nav-right {
-    float: left;
-    @media (min-width:768px) {
-        float: right;
-    }
-}
-
-ul#difficulty {
-    list-style-type: none;
-
-    > li {
-        display: inline-block;
-        margin-right: 10px;
     }
 }
