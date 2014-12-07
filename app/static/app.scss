@@ -192,3 +192,19 @@ ul.submissions {
     @extend .difficulty;
     background: orangered;
 }
+
+ul.tags {
+    list-style-type: none;
+    padding-left: 0;
+
+    li {
+        display: inline-block;
+        margin-right: 10px;
+        padding: 2px 5px;
+        background: lightgrey;
+        cursor: pointer;
+        font-weight: bold;
+        border: 1px solid #dcdcdc;
+        border-radius: 5px;
+    }
+}

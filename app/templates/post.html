@@ -11,6 +11,18 @@
                 <a href="?delete=1">Delete <span aria-hidden="true" class="glyphicon glyphicon-remove"></span></a>
             </span>
         {% endif %}
+        {% if post.tags %}
+            <ul class="tags">
+            {% for tag in post.tags %}
+                <li>{{ tag.name }}
+                    {% if can_edit %}
+                        <span aria-hidden="true" class="glyphicon glyphicon-remove"></span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        <a class="more-tags">Add tag</a>
         <div class="author">
             by <a href="{{ url_for('user', username=post.author.username) }}" >{{ post.author.username }}</a>
         </div>
