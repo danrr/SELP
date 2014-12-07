@@ -61,6 +61,7 @@ class User(db.Model):
 
 
 class Post(db.Model):
+    __searchable__ = ['title', 'body']
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     body = db.Column(db.Text)
