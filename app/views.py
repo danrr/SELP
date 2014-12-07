@@ -18,7 +18,9 @@ def before_request():
 def home():
     context = {
         'title': 'Cooking challenge',
-        'posts': [post for post in Post.query.order_by(Post.id.desc()).limit(5) if post.is_visible()]
+        'annotated_posts': [('Open posts', Post.get_open_posts()),
+                            ('Closed posts', Post.get_closed_posts()),
+                            ('Archived posts', Post.get_archived_posts())]
     }
 
     return render_template('index.html', **context)
