@@ -1,4 +1,7 @@
-<li data-tag-name="{{ tag.name }}">{{ tag.name }}
+<li data-tag-name="{{ tag.name }}">
+    <a href="{{ url_for('search_results', tag=tag.name) }}" title="Click to find more posts with this tag">
+        {{ tag.name }}
+    </a>
     {% if is_author %}
         <span aria-hidden="true" class="remove-tag glyphicon glyphicon-remove" title="Remove tag"></span>
     {% endif %}
