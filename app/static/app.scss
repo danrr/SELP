@@ -143,3 +143,52 @@ ul.submissions {
         display: block;
     }
 }
+
+.post-title {
+    display: inline-block;
+}
+
+.edit, .delete {
+    margin-left: 5px;
+    vertical-align: super;
+}
+
+.difficulty {
+    margin-left: 15px;
+    padding: 5px;
+    border-radius: 5px;
+    vertical-align: super;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    text-shadow:
+       -1px -1px 0 black,
+        1px -1px 0 black,
+       -1px  1px 0 black,
+        1px  1px 0 black;
+}
+
+.difficulty-1 {
+    @extend .difficulty;
+    background: darkgreen;
+}
+
+.difficulty-2 {
+    @extend .difficulty;
+    background: greenyellow;
+}
+
+.difficulty-3 {
+    @extend .difficulty;
+    background: yellow;
+}
+
+.difficulty-4 {
+    @extend .difficulty;
+    background: orange;
+}
+
+.difficulty-5 {
+    @extend .difficulty;
+    background: orangered;
+}
