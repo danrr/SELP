@@ -129,6 +129,7 @@ class Post(db.Model):
             tag = Tag(name)
             db.session.add(tag)
         self.tags.append(tag)
+        return tag
 
     def remove_tag(self, name):
         tag = Tag.query.filter_by(name=name).first()
