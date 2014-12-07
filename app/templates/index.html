@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% from "partials/_post.html" import post_template %}
 {% block content %}
-    <a href="{{ url_for('new_post') }}"> New post</a>
+    <a class="btn btn-lg btn-primary new-post" href="{{ url_for('new_post') }}"> New post</a>
     {% for title, posts in annotated_posts %}
         <div class="posts">
             <h2> {{ title }}</h2>
