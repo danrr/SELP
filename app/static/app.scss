@@ -159,6 +159,7 @@ ul.submissions {
     border-radius: 5px;
     vertical-align: super;
     color: white;
+    cursor: pointer;
     font-size: 13px;
     font-weight: bold;
     text-shadow:
@@ -166,6 +167,11 @@ ul.submissions {
         1px -1px 0 black,
        -1px  1px 0 black,
         1px  1px 0 black;
+
+    &:hover {
+        color: white;
+        text-decoration: none;
+    }
 }
 
 .difficulty-1 {
