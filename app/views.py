@@ -122,13 +122,12 @@ def post(id):
         return redirect(url_for('post', id=id))
 
     post = Post.query.filter_by(id=id).first()
-    if post is None or not post.is_visible():
-        flash('Post not found')
+    if post is None or \
+            (not post.is_visible() and not is_current_user(post.author.id)):
+        flash('Post not found', 'error')
         return redirect(url_for('home'))
 
-    author = User.query.filter_by(id=post.user_id).one()
-
-    if is_current_user(author.id):
+    if is_current_user(post.author.id):
         if request.args.get('edit', '') == "1":
             if post.is_archived():
                 flash('Archived posts cannot be modified')
@@ -201,7 +200,7 @@ def post(id):
                                    title='Submit entry',
                                    form=form)
 
-    can_edit = is_current_user(author.id) and not post.is_archived()
+    can_edit = is_current_user(post.author.id) and not post.is_archived()
     context = {
         'post': post,
         'title': post.title,
