@@ -33,6 +33,12 @@ def main():
     db.session.add(post4)
     db.session.add(post5)
     db.session.commit()
+    post1.add_tag("curry")
+    post1.add_tag("savoury")
+    post2.add_tag("blood")
+    post3.add_tag("cake")
+    post4.add_tag("vegan")
+    db.session.commit()
 
     submission1 = Submission('a/b/c', 'This is my chickpea curry', post_id=post1.id, user_id=user2.id)
     submission2 = Submission('a/b/c', 'This is my chickpea curry', post_id=post1.id, user_id=user1.id)
