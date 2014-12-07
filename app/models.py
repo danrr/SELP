@@ -128,14 +128,11 @@ class Post(db.Model):
         except NoResultFound:
             tag = Tag(name)
             db.session.add(tag)
-            db.session.commit()
         self.tags.append(tag)
-        db.session.commit()
 
     def remove_tag(self, name):
         tag = Tag.query.filter_by(name=name).first()
         self.tags.remove(tag)
-        db.session.commit()
         if not tag.posts:
             db.session.delete(tag)
 
