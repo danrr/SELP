@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "partials/_post.html" import post_template %}
+{% block content %}
+    <h2> {{ title }}</h2>
+    {% if posts %}
+        <div class="posts">
+            {% for post in posts %}
+                {{ post_template("home", post) }}
+            {% endfor %}
+            <a id="show-more-posts">Show more</a>
+        </div>
+    {% else %}
+        <span class="alert alert-danger" role="alert">
+            No results found
+        </span>
+    {% endif %}
+{% endblock %}
