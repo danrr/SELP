@@ -1,4 +1,3 @@
-from datetime import date
 import os
 from sqlalchemy.exc import IntegrityError
 from werkzeug.utils import secure_filename
