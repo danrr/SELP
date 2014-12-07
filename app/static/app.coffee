@@ -54,7 +54,8 @@ load = ->
                     post_id: post_id
                     tag: tag
                 success: (data) ->
-                    $('ul.tags').append(data.html)
+                    if data.success
+                        $('ul.tags').append(data.html)
 
 
 $(document).ready load

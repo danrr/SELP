@@ -294,11 +294,17 @@ def add_tag():
     if post is not None:
         tag = post.add_tag(request.form["tag"])
         db.session.commit()
-        return jsonify({
-            "html": render_template("partials/_tag.html",
-                                    tag=tag,
-                                    is_author=is_current_user(post.author.id),)
-        })
+        if tag:
+            return jsonify({
+                "success": True,
+                "html": render_template("partials/_tag.html",
+                                        tag=tag,
+                                        is_author=is_current_user(post.author.id),)
+            })
+        else:
+            return jsonify({
+                "success": False
+            })
     else:
         return jsonify(), 403
 
