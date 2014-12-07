@@ -203,24 +203,19 @@ def post(id):
 
     can_edit = is_current_user(author.id) and not post.is_archived()
     context = {
+        'post': post,
         'title': post.title,
-        'content': post.body,
-        'author': author.username,
         'can_edit': can_edit,
-        'post_id': post.id,
-        'post_closed': post.is_closed(),
-        'submissions_open': post.are_submissions_open(),
         'submissions': []
     }
 
     for submission in Submission.query.filter_by(post_id=post.id).all():
-        author = User.query.filter_by(id=submission.user_id).one()
         context['submissions'] += [{
             'id': submission.id,
             'url': submission.url,
             'text': submission.text,
-            'author': author.username,
-            'author_id': author.id,
+            'author': submission.submitter.username,
+            'author_id': submission.submitter.id,
             'won': submission.won,
             'score': submission.count_upvotes(),
             'user_upvoted': is_user_logged_in() and submission.has_user_upvoted(g.user.id)
