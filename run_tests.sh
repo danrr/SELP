@@ -1,5 +1,5 @@
 #!/bin/bash
 
 source env/bin/activate
-python run.py
+python -m unittest discover tests
 deactivate
