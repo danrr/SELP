@@ -13,7 +13,7 @@ from app.models import User, Post, Submission
 @app.before_request
 def before_request():
     g.user = current_user
-    g.search_form = SearchForm()
+    g.search_form = SearchForm()  # search form is on all pages so it needs to be initialised before all GET requests
 
 
 @app.route("/", methods=["GET"])
