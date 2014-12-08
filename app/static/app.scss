@@ -54,6 +54,16 @@ ul#difficulty {
     }
 }
 
+.more-ingredients,.less-ingredients {
+    float: right;
+    margin-left: 5px;
+    padding: 0 5px;
+    cursor: pointer;
+    color: #555;
+    font-size: 30px;
+    font-weight: bold;
+}
+
 // Post pages
 
 .upvote {

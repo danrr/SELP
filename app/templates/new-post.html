@@ -8,11 +8,13 @@
             {{ form.title.label }}
             {{ form.title(size=80, class="form-control", required="", autofocus="") }}
         </div>
-        <div>
+        <div class="clearfix">
             {{ form.ingredients.label }}
             {% for field in form.ingredients %}
                 {{ field(required="", class="form-control") }}
             {% endfor %}
+            <span class="more-ingredients" title="Add more ingredients">+</span>
+            <span class="less-ingredients" title="Remove last ingredient">-</span>
         </div>
         <div>
             {{ form.body.label }}
