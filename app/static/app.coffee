@@ -81,6 +81,23 @@ load = ->
                     if data.success
                         $('ul.tags').append(data.html)
 
+    $('.more-ingredients').on 'click', (e) ->
+        incrementAttribute = (attr, $el)->
+            oldValue = $el.attr(attr)
+            number = parseInt(oldValue.charAt(oldValue.length - 1))
+            number++
+            newValue = "ingredients-#{number}"  # hard coding it for now,
+                                                # can be refactored to be more general if need be
+            $el.attr(attr, newValue)
+
+        $formList = $(e.currentTarget).parent()
+        $lastInput =  $formList.find('input:last-of-type')
+        $newInput = $lastInput.clone()
+        $newInput.val("")
+        incrementAttribute("id", $newInput)
+        incrementAttribute("name", $newInput)
+        $lastInput.after($newInput)
+
 
 $(document).ready load
 $(document).on "page:load", load
