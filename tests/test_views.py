@@ -10,7 +10,7 @@ class TestViews(BaseTest):
         response = self.app.get('/')
         self.assertEqual(response.status_code, 200)
         self.assert_contains_string(response.data, '<nav role="navigation"')
-        self.assert_does_not_contain_string(response.data, '<div class="post">')
+        self.assert_does_not_contain_string(response.data, '<div class="post"')
 
     def test_homepage_displays_with_posts(self):
         user = User(username='dan', email='dan@X.com', password='12345')
@@ -20,5 +20,5 @@ class TestViews(BaseTest):
         response = self.app.get('/')
         self.assertEqual(response.status_code, 200)
         self.assert_contains_string(response.data, '<nav role="navigation"')
-        self.assert_contains_string(response.data, '<div class="post">')
+        self.assert_contains_string(response.data, '<div class="post"')
         self.assert_contains_string(response.data, 'POSTBODY')
