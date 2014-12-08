@@ -1,4 +1,27 @@
+timer = ->
+    $timer = $('.timer')
+    if $timer
+        closing_time = moment($timer.data("date"))
+        setInterval ->
+            time_left = closing_time - moment()
+            seconds_left = time_left / 1000
+            days = parseInt(seconds_left / 86400)
+            seconds_left = seconds_left % 86400
+            hours = parseInt(seconds_left / 3600)
+            seconds_left = seconds_left % 3600
+            minutes = parseInt(seconds_left / 60)
+            seconds = parseInt(seconds_left % 60)
+            $timer.html("""Time until submissions are closed:
+                        <span class="days"> #{days} Days</span>
+                        <span class="hours"> #{hours} Hours</span>
+                        <span class="minutes"> #{minutes} Minutes</span>
+                        <span class="seconds"> #{seconds} Seconds</span>""")
+        , 1000
+
 load = ->
+
+    timer()
+
     $('.upvote').on "click", "a", (e) ->
         $el = $ e.currentTarget
         author_id = $el.parents('li').data('author-id')

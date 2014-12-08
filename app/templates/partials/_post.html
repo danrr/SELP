@@ -43,5 +43,10 @@
                 <a href="?submit=1">Submit</a>
             </div>
         {% endif %}
+        {% if page=="post" and post.are_submissions_open() %}
+            <div class="timer" data-date="{{ post.get_closing_datetime() }}">
+                Time until submissions are closed:
+            </div>
+        {% endif %}
     </div>
 {% endmacro %}
