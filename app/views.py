@@ -339,7 +339,6 @@ def search():
 
 
 @app.route('/search_results/')
-@login_required
 def search_results():
     query_string = ""
     query = request.args.get("query")
