@@ -67,8 +67,9 @@ load = ->
     $('.more-tags').on 'click', (e) ->
         post_id = $('div.post').data('post-id')
         tag = prompt("tag")
-        if tag == ""
-            alert("Please supply a tag name")
+        tag_regex = /^[a-zA-Z0-9]+$/g
+        if not tag_regex.test(tag)
+            alert("Please supply a valid tag name (letters and numbers only)")
         else
             $.ajax
                 url: "/addtag/"
