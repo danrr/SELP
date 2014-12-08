@@ -1,6 +1,6 @@
 from flask.ext.wtf import Form
 from flask.ext.wtf.file import FileRequired, FileField
-from wtforms import StringField, BooleanField, PasswordField, TextAreaField, RadioField, DateTimeField
+from wtforms import StringField, BooleanField, PasswordField, TextAreaField, RadioField, DateTimeField, FieldList
 from wtforms.validators import DataRequired, Email, EqualTo
 
 
@@ -20,6 +20,7 @@ class RegistrationForm(Form):
 class PostForm(Form):
     title = StringField('Title:', validators=[DataRequired()])
     body = TextAreaField('Body:', validators=[DataRequired()])
+    ingredients = FieldList(StringField('Ingredient', validators=[DataRequired()]), min_entries=1)
     difficulty = RadioField("Difficulty:",
                             choices=[(1, "Beginner"), (2, "Novice"), (3, "Intermediate"), (4, "Hard"), (5, "Expert")],
                             coerce=int,

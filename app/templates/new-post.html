@@ -9,6 +9,12 @@
             {{ form.title(size=80, class="form-control", required="", autofocus="") }}
         </div>
         <div>
+            {{ form.ingredients.label }}
+            {% for field in form.ingredients %}
+                {{ field(required="", class="form-control") }}
+            {% endfor %}
+        </div>
+        <div>
             {{ form.body.label }}
             {{ form.body(rows=20, cols=100, class="form-control", required="") }}
         </div>
