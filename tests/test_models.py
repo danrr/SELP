@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from app import db
 from mock import patch, Mock, call
-from app.models import User, Submission, Post, Tag
+from app.models import User, Submission, Post, Tag, Ingredient
 from tests.base_test import BaseTest
 
 
@@ -193,6 +193,22 @@ class TestPostModel(BaseTest):
         # it removes tags
         post1.remove_tag("cake")
         self.assertEqual(post1.tags.all(), [])
+
+    def test_post_model_add_ingredients(self):
+        post = Post('Title', 'Body', 1, difficulty=1)
+        self.assertEqual(post.ingredients.all(), [])
+        post.add_ingredients(['ingredient1', 'ingredient2'])
+        self.assertEqual(post.ingredients.all(), Ingredient.query.all())
+        self.assertEqual(len(post.ingredients.all()), 2)
+
+    def test_post_model_remove_ingredients(self):
+        post = Post('Title', 'Body', 1, difficulty=1)
+        ingredient = Ingredient("ingredient", post.id)
+        post.ingredients.append(ingredient)
+        self.assertEqual(post.ingredients.all(), [ingredient])
+        post.remove_ingredients()
+        self.assertEqual(post.ingredients.all(), [])
+
 
 class TestSubmissionModel(BaseTest):
     @patch('app.models.ImgurClient.upload_from_path', Mock())

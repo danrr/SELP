@@ -71,6 +71,7 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     submissions = db.relationship('Submission', backref='post', lazy='dynamic')
     tags = db.relationship('Tag', secondary=tags, backref='posts', lazy='dynamic')
+    ingredients = db.relationship('Ingredient', backref='post', lazy='dynamic')
 
     def __init__(self, title, body, user_id, difficulty, publish_time=None):
         self.title = title
@@ -144,10 +145,33 @@ class Post(db.Model):
         if not tag.posts:
             db.session.delete(tag)
 
+    def add_ingredients(self, ingredients):
+        for text in ingredients:
+            ingredient = Ingredient(text, self.id)
+            db.session.add(ingredient)
+            self.ingredients.append(ingredient)
+
+    def remove_ingredients(self):
+        for ingredient in self.ingredients.all():
+            self.ingredients.remove(ingredient)
+
     def __repr__(self):
         return '<Post {title}>'.format(title=self.title)
 
 whooshalchemy.whoosh_index(app, Post)
+
+
+class Ingredient(db.Model):
+    id = db.Column(db.Integer, primary_key=True, index=True)
+    text = db.Column(db.Text)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+
+    def __init__(self, text, post_id):
+        self.text = text
+        self.post_id = post_id
+
+    def __repr__(self):
+        return "<Ingredient {text}>".format(text=self.text)
 
 
 class Submission(db.Model):
