@@ -83,6 +83,27 @@ def main():
     db.session.add(post4)
     db.session.add(post5)
     db.session.commit()
+    post1.add_ingredients(["1 tbsp oil", "1 onion, chopped", "1 garlic clove, crushed", "1/4 tsp salt",
+                           "1/2 tsp cumin powder", "1/4 tsp coriander powder", "1/4 tsp turmeric powder",
+                           "1/4 tsp red chilli powder", "1 fresh tomato, chopped",
+                           "1 x 400g/14oz can chickpeas, drained and rinsed"])
+    post2.add_ingredients(["2 Pints Pig or Ox Blood", "1 lb. Chopped Suet", "8 oz. Diced Onions",
+                           "1/2 pint Milk", "3 oz. Oatmeal", "Salt and Pepper"])
+    post3.add_ingredients(["175g light muscovado sugar", "175ml sunflower oil", "3 large eggs, lightly beaten",
+                           "140g grated carrots (about 3 medium)", "100g raisins", "grated zest of 1 large orange",
+                           "175g self-raising flour", "1 tsp bicarbonate of soda", "1 tsp ground cinnamon",
+                           "1/2 tsp grated nutmeg (freshly grated will give you the best flavour)"])
+    post4.add_ingredients(["1 onion, chopped", "4 tablespoons olive oil", "2 carrots, diced",
+                           "2 sticks celery, chopped", "2 cloves garlic, finely chopped", "1 teaspoon dried oregano",
+                           "1 bay leaf", "1 teaspoon dried basil", "400g passata", "385g dry lentils", "2 litres water",
+                           "15g spinach, rinsed and thinly sliced", "2 tablespoons vinegar", "salt to taste",
+                           "ground black pepper to taste"])
+    post5.add_ingredients(["2.5 kg oxtail, chopped into 4cm chunks (ask your butcher to do this)", "sea salt",
+                           "freshly ground black pepper", "olive oil", "2 medium leeks", "2 stalks of celery",
+                           "4 medium carrots", "a few sprigs of fresh thyme", "a few sprigs of fresh rosemary",
+                           "4 fresh bay leaves", "4 cloves", "2 heaped tablespoons plain flour",
+                           "2 x 400 g tins of plum tomatoes", "275 ml porter or red wine"])
+    db.session.commit()
     post1.add_tag("curry")
     post1.add_tag("savoury")
     post2.add_tag("blood")
