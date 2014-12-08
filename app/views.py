@@ -108,6 +108,7 @@ def new_post():
                     user_id=g.user.id,
                     publish_time=form.start_time.data,
                     difficulty=form.difficulty.data)
+        post.add_ingredients(form.ingredients.data)
         db.session.add(post)
         db.session.commit()
         return redirect((url_for('home')))
@@ -140,6 +141,8 @@ def post(id):
                 post.body = form.body.data
                 post.difficulty = form.difficulty.data
                 post.publish_time = form.start_time.data
+                post.remove_ingredients()
+                post.add_ingredients(form.ingredients.data)
                 db.session.commit()
                 return reload_page()
 
@@ -147,6 +150,9 @@ def post(id):
             form.body.data = post.body
             form.start_time.data = post.publish_time
             form.difficulty.data = post.difficulty
+            form.ingredients.pop_entry()
+            for ingredient in post.get_ingredients():
+                form.ingredients.append_entry(ingredient)
             return render_template('new-post.html',
                                    title='Edit post',
                                    form=form)
