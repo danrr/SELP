@@ -81,6 +81,9 @@ class Post(db.Model):
             publish_time = datetime.now()
         self.publish_time = publish_time
 
+    def get_closing_datetime(self):
+        return self.publish_time + timedelta(days=7)
+
     def is_visible(self):
         return self.publish_time <= datetime.now()
 
@@ -98,7 +101,7 @@ class Post(db.Model):
                                                  Submission.post_id == cls.id).order_by(Post.id.desc()).limit(end)[start:]
 
     def are_submissions_open(self):
-        return self.is_visible() and self.publish_time + timedelta(days=7) > datetime.now()
+        return self.is_visible() and self.get_closing_datetime() > datetime.now()
 
     @classmethod
     def get_open_posts(cls, start=0, end=5):
