@@ -22,11 +22,61 @@ def main():
     db.session.add(user4)
     db.session.commit()
 
-    post1 = Post('Chickpea curry', 'Make chickpea curry', user3.id, publish_time=today - timedelta(11), difficulty=3)
-    post2 = Post('Black pudding', 'Make carrot cake', user3.id, publish_time=today - timedelta(8), difficulty=5)
-    post3 = Post('Carrot cake', 'Make carrot cake', user2.id, publish_time=today - timedelta(3), difficulty=2)
-    post4 = Post('Soup', 'Make soup', user1.id, publish_time=today, difficulty=1)
-    post5 = Post('Stew', 'Make stew', user1.id, publish_time=today + timedelta(3), difficulty=4)
+    post1 = Post('Chickpea curry',
+                 "Heat a deep saucepan or a medium sized wok and add the oil or butter followed by the onions and"
+                 "garlic. Fry the mixture till the onions are caramelised. Then add the salt, cumin, coriander, turmeric"
+                 "and red chilli powders. Mix for a minute and tip in the tomato. Cook the sauce until it begins to"
+                 "thicken. Add 1/4 cup of water and stir. Then tip in the chickpeas and mix. Mash a few of the chickpeas"
+                 "while cooking. Cover and simmer for five minutes. Then add the ginger and the garam masala. Cook for"
+                 "another minute. Serve with pitta breads or plain basmati rice.",
+                 user3.id, publish_time=today - timedelta(11), difficulty=3)
+    post2 = Post('Black pudding',
+                 "Wash the pudding skins and soak in salty water overnight. Put the blood into a bowl and add 1"
+                 "teaspoon of salt, strain through a fine sieve to a larger bowl. Stir in the milk, suet, onions and"
+                 "oatmeal and season with salt and pepper. Now to fill the pudding skins...tie at one end (with string)"
+                 "and then turn inside out. Fill it with mixture tie off in equal lengths...like sausages. Place in water"
+                 "that is off the boil, after about 5 minutes prick all over with a large needle. Boil for 30 minutes,"
+                 "then take out of pan and hang in a cool place to dry.",
+                 user3.id, publish_time=today - timedelta(8), difficulty=5)
+    post3 = Post('Carrot cake',
+                 "Preheat the oven to 180C/Gas 4/fan 160C. Oil and line the base and sides of an 18cm square cake tin"
+                 "with baking parchment. The easiest way to do this is to cut two long strips the width of the tin and"
+                 "put each strip crossways, covering the base and sides of the tin, with a double layer in the base."
+                 "Tip the sugar into a large mixing bowl, pour in the oil and add the eggs. Lightly mix with a wooden"
+                 "spoon. Stir in the grated carrots, raisins and orange rind. Mix the flour, bicarbonate of soda and"
+                 "spices, then sift into the bowl. Lightly mix all the ingredients - when everything is evenly"
+                 "amalgamated stop mixing. The mixture will be fairly soft and almost runny. Pour the mixture into the"
+                 "prepared tin and bake for 40-45 minutes, until it feels firm and springy when you press it in the"
+                 "centre. Cool in the tin for 5 minutes, then turn it out, peel off the paper and cool on a wire rack."
+                 "(You can freeze the cake at this point.) Beat together the frosting ingredients in a small bowl until"
+                 "smooth - you want the icing about as runny as single cream. Set the cake on a serving plate and boldly"
+                 "drizzle the icing back and forth in diagonal lines over the top, letting it drip down the sides.",
+                 user2.id, publish_time=today - timedelta(3), difficulty=2)
+    post4 = Post('Soup',
+                 "In a large soup pot, heat oil over medium heat. Add onions, carrots and celery; cook and stir until"
+                 "onion is tender. Stir in garlic, bay leaf, oregano and basil; cook for 2 minutes. Stir in lentils and"
+                 "add water and tomatoes. Bring to the boil. Reduce heat and simmer for at least 1 hour. When ready to"
+                 "serve, stir in spinach and cook until it wilts. Stir in vinegar and season to taste with salt and"
+                 "pepper and more vinegar if desired.",
+                 user1.id, publish_time=today, difficulty=1)
+    post5 = Post('Stew',
+                 "Preheat the oven to 220 degrees C/425 degrees F/gas 7. Place a large roasting tray in the oven to"
+                 "preheat. Carefully remove the hot tray from the oven, then add the oxtail. Season and drizzle over a"
+                 "lug of olive oil, then toss to coat and place in the hot oven for around 20 minutes, or until golden"
+                 "and caramelized. Meanwhile, trim and halve the leeks and celery lengthways, then chop into rough 2cm"
+                 "chunks. Peel and chop the carrots into 2cm pieces, then place into a large ovenproof casserole pan"
+                 "over a medium-low heat with 1 tablespoon of olive oil. Pick, roughly chop and add the thyme and"
+                 "rosemary leaves, then add the bay and cook for around 20 minutes, or until soft and sweet, stirring"
+                 "frequently. Meanwhile, remove the oxtail from the oven and set aside. Reduce the oven temperature to"
+                 "170 degrees C/325 degrees F/gas 3. Add the cloves and flour to the veg, stirring well to combine,"
+                 "then pour in the tomatoes and porter (or wine, if using). Add the oxtail and any roasting juices,"
+                 "cover with the beef stock or 1 litre of cold water and stir well. Turn the heat up to high and bring"
+                 "to the boil, then pop the lid on and place in the hot oven for around 5 hours, or until the meat falls"
+                 "away from the bone, stirring every hour or so and adding a splash of water to loosen, if needed."
+                 "Remove the pan from the oven and leave to cool for about 10 minutes. Using rubber gloves, strip the"
+                 "meat from the bones and return to the pan, discarding the bones. Add a good splash of Worcestershire"
+                 "sauce, season to taste and enjoy with creamy mash and seasonal steamed greens.",
+                 user1.id, publish_time=today + timedelta(3), difficulty=4)
     db.session.add(post1)
     db.session.add(post2)
     db.session.add(post3)
