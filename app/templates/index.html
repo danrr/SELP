@@ -2,13 +2,13 @@
 {% from "partials/_post.html" import post_template %}
 {% block content %}
     <a class="btn btn-lg btn-primary new-post" href="{{ url_for('new_post') }}"> New post</a>
-    {% for title, posts in annotated_posts %}
+    {% for status, title, posts in annotated_posts %}
         <div class="posts">
             <h2> {{ title }}</h2>
             {% for post in posts %}
                 {{ post_template("home", post) }}
             {% endfor %}
-            <a id="show-more-posts" data-type="{{loop.index}}">Show more</a>
+            <a class="show-more-posts" data-status="{{status}}" data-page="home">Show more</a>
         </div>
     {% endfor %}
 {% endblock %}

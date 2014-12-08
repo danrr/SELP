@@ -3,7 +3,7 @@ import re
 import os
 from sqlalchemy.exc import IntegrityError
 from werkzeug.utils import secure_filename
-from flask import render_template, redirect, flash, g, url_for, request, jsonify
+from flask import render_template, redirect, flash, g, url_for, request, jsonify, get_template_attribute
 from flask.ext.login import login_user, current_user, logout_user, login_required
 from app import app, login_manager, db
 from app.forms import LoginForm, RegistrationForm, PostForm, SubmissionForm, SearchForm
@@ -20,9 +20,9 @@ def before_request():
 def home():
     context = {
         'title': 'Cooking challenge',
-        'annotated_posts': [('Open posts', Post.get_open_posts()),
-                            ('Closed posts', Post.get_closed_posts()),
-                            ('Archived posts', Post.get_archived_posts())]
+        'annotated_posts': [('open', 'Open posts', Post.get_open_posts()),
+                            ('closed', 'Closed posts', Post.get_closed_posts()),
+                            ('archived', 'Archived posts', Post.get_archived_posts())]
     }
 
     return render_template('index.html', **context)
@@ -364,6 +364,37 @@ def search_results():
     return render_template('search-results.html',
                            title="Search",
                            posts=results)
+
+
+@app.route('/getmore/', methods=["POST"])
+def get_more():
+    start = int(request.form.get("start"))
+    stop = int(request.form.get("stop"))
+    rendered_posts = []
+    template = get_template_attribute('partials/_post.html', "post_template")
+    posts = []
+    page = request.form.get("page")
+    if page == "home":
+        status = request.form.get("status")
+        if status == "open":
+            posts = Post.get_open_posts(start, stop)
+        if status == "closed":
+            posts = Post.get_closed_posts(start, stop)
+        if status == "archived":
+            posts = Post.get_archived_posts(start, stop)
+    if posts:
+        for post in posts:
+            post_html = template(page=page, post=post)
+            rendered_posts += [post_html]
+        return jsonify({
+            "success": True,
+            "posts": rendered_posts
+        })
+    else:
+        return jsonify({
+            "success": False
+        })
+
 
 
 #helpers

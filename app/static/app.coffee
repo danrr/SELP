@@ -18,6 +18,12 @@ timer = ->
                         <span class="seconds"> #{seconds} Seconds</span>""")
         , 1000
 
+
+window.offsets =
+    'open': 5
+    'closed': 5
+    'archived': 5
+
 load = ->
 
     timer()
@@ -104,6 +110,26 @@ load = ->
         $lastInput.remove() unless $lastInput.attr("id") == "ingredients-0"  # don't remove the input field if there is
                                                                              # only one, hard coded for now
 
+    $('.show-more-posts').on 'click', (e) =>
+        $el = $(e.currentTarget)
+        page = $el.data("page")
+        status = $el.data("status")
+        $.ajax
+            url : "/getmore/"
+            type: "POST"
+            data:
+                page: page
+                status: status
+                start: window.offsets[status]
+                stop: window.offsets[status] + 5
+            success: (data) ->
+                if data.success
+                    window.offsets[status] += 5
+                    for post in data.posts
+                        $el.before(post)
+                else
+                    $el.before('<div class="alert alert-danger">No more posts to show</div>')
+                    $el.remove()
 
 $(document).ready load
 $(document).on "page:load", load
