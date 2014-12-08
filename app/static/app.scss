@@ -244,3 +244,10 @@ ul.tags {
     display: inline-block;
     padding: 2px 5px;
 }
+
+.ingredients {
+
+    @media (min-width: 480px) {
+        float: right;
+    }
+}
