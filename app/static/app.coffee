@@ -98,6 +98,12 @@ load = ->
         incrementAttribute("name", $newInput)
         $lastInput.after($newInput)
 
+    $('.less-ingredients').on 'click', (e) ->
+        $formList = $(e.currentTarget).parent()
+        $lastInput =  $formList.find('input:last-of-type')
+        $lastInput.remove() unless $lastInput.attr("id") == "ingredients-0"  # don't remove the input field if there is
+                                                                             # only one, hard coded for now
+
 
 $(document).ready load
 $(document).on "page:load", load
