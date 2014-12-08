@@ -155,6 +155,9 @@ class Post(db.Model):
         for ingredient in self.ingredients.all():
             self.ingredients.remove(ingredient)
 
+    def get_ingredients(self):
+        return [ingredient.text for ingredient in self.ingredients.all()]
+
     def __repr__(self):
         return '<Post {title}>'.format(title=self.title)
 

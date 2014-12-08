@@ -209,6 +209,12 @@ class TestPostModel(BaseTest):
         post.remove_ingredients()
         self.assertEqual(post.ingredients.all(), [])
 
+    def test_post_model_get_ingredients(self):
+        post = Post('Title', 'Body', 1, difficulty=1)
+        ingredient = Ingredient("ingredient", post.id)
+        post.ingredients.append(ingredient)
+        self.assertEqual(post.get_ingredients(), ['ingredient'])
+
 
 class TestSubmissionModel(BaseTest):
     @patch('app.models.ImgurClient.upload_from_path', Mock())
