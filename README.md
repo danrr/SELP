@@ -4,6 +4,11 @@ Dan Ristea <br />
 s1244166
 
 ###Setup###
+Prerequisites:
+
+* virtualenv
+* git
+
 To install run *source setup.sh*. It will install a virtualenv with dependencies and a node.js instance with nvm, compile coffee-script and scss, and initialize the databases.
 
 ###Run###
