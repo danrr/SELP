@@ -132,3 +132,43 @@ class TestNewPostView(BaseTest):
             'ingredients-0': 'ingredients-0'
         })
         self.assertEqual(Post.query.count(), 1)
+
+
+class TestPostView(BaseTest):
+    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    def setUp(self):
+        super(TestPostView, self).setUp()
+        self.user = User('mike', 'a@a.com', '12345')
+        db.session.add(self.user)
+        db.session.commit()
+        self.post = Post(title="POSTTITLE", body="POSTBODY", user_id=self.user.id, difficulty=1)
+        db.session.add(self.post)
+        db.session.commit()
+        self.submission = Submission(path="a/b/c", text="SUBMISSIONTEXT", user_id=self.user.id, post_id=self.post.id)
+        db.session.add(self.submission)
+        db.session.commit()
+
+    @patch('app.views.is_current_user', Mock(return_value=False))
+    def test_post_view_displays_post_and_submissions(self):
+        response = self.app.get('/post/{id}/'.format(id=self.post.id))
+        self.assertEqual(response.status_code, 200)
+        self.assert_contains_string(response.data, "POSTTITLE")
+        self.assert_contains_string(response.data, "SUBMISSIONTEXT")
+
+    @patch('app.views.is_current_user', Mock(return_value=True))
+    @patch.object(Post, 'is_archived', Mock(return_value=True))
+    def test_post_view_does_not_allow_modifying_archived_posts(self):
+        response = self.app.get('/post/{id}/?edit=1'.format(id=self.post.id), follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assert_contains_string(response.data, "Archived posts cannot be modified")
+        response = self.app.get('/post/{id}/?delete=1'.format(id=self.post.id), follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assert_contains_string(response.data, "Archived posts cannot be deleted")
+
+    @patch('app.views.is_current_user', Mock(return_value=True))
+    def test_post_view_does_not_allow_submissions_to_own_post(self):
+        response = self.app.get('/post/{id}/?submit=1'.format(id=self.post.id), follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assert_contains_string(response.data, "Cannot submit entry to own challenge")
+
+
