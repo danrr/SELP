@@ -7,7 +7,9 @@ from app import app, db
 class BaseTest(unittest.TestCase):
     def setUp(self):
         app.config.from_object('tests.test_config')
+        app.login_manager.init_app(app)
         self.app = app.test_client()
+
         db.create_all()
 
     def tearDown(self):
