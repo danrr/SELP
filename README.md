@@ -53,3 +53,7 @@ To recompile the static assets, run *source compile_js.sh* for the coffeescript 
 ###Proposal###
 
 Please find the proposal in the PROPOSAL.md file at the root of this repo.
+
+###Report###
+
+Please find the proposal in the REPORT.md file at the root of this repo.
