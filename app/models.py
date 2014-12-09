@@ -147,7 +147,7 @@ class Post(db.Model):
         end = start + step
         return db.session.query(cls).filter(cls.publish_time <= datetime.now() - timedelta(days=7),
                                             ~exists().where(and_(cls.id == Submission.post_id,
-                                                               Submission.won)))[start:end]
+                                            Submission.won)))[start:end]
 
     def get_difficulty_string(self):
         return {
@@ -282,5 +282,6 @@ class Tag(db.Model):
 
     def __init__(self, name):
         self.name = name
+        
     def __repr__(self):
         return "<Tag {name}>".format(name=self.name)
