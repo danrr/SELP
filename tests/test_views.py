@@ -51,3 +51,40 @@ class TestLoginView(BaseTest):
         }, follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         self.assert_contains_string(response.data, 'No such user')
+
+
+class TestRegisterView(BaseTest):
+    def test_register_view_adds_user(self):
+        response = self.app.post('/register', data={
+            'username': 'dan',
+            'password': '12345',
+            'confirm': '12345',
+            'email': 'a@a.com'
+        }, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assert_contains_string(response.data, 'Please login to your new account')
+        self.assertEqual(User.query.first().username, 'dan')
+
+    def test_register_view_fails_when_username_taken(self):
+        user = User(username='dan', email='dan@X.com', password='12345')
+        db.session.add(user)
+        response = self.app.post('/register', data={
+            'username': 'dan',
+            'password': '12345',
+            'confirm': '12345',
+            'email': 'a@a.com'
+        }, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assert_contains_string(response.data, 'User dan already exists')
+
+    def test_register_view_fails_when_email_taken(self):
+        user = User(username='dan', email='dan@X.com', password='12345')
+        db.session.add(user)
+        response = self.app.post('/register', data={
+            'username': 'dana',
+            'password': '12345',
+            'confirm': '12345',
+            'email': 'dan@X.com'
+        }, follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assert_contains_string(response.data, 'dan@X.com already used')
