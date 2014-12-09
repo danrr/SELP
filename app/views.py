@@ -221,12 +221,12 @@ def post(id):
 
 @app.route('/upvote/', methods=['POST'])
 def upvote():
-    if request.form["type"] == "submission":  # type can be used for upvoting other things, not just submissions
+    if request.form.get("type") == "submission":  # type can be used for upvoting other things, not just submissions
         if is_user_logged_in():
-            post = Post.query.filter_by(id=request.form["post_id"]).first()
+            post = Post.query.filter_by(id=request.form.get("post_id")).first()
             if post.is_visible() and not post.is_archived():
-                submission = Submission.query.filter_by(user_id=request.form["author_id"],
-                                                        post_id=request.form["post_id"]).first()
+                submission = Submission.query.filter_by(user_id=request.form.get("author_id"),
+                                                        post_id=request.form.get("post_id")).first()
                 submission.toggle_upvote(g.user.id)
                 db.session.commit()
                 return jsonify({
@@ -275,9 +275,9 @@ def rankings():
 
 @app.route('/removetag/', methods=["POST"])
 def remove_tag():
-    post = Post.query.filter_by(id=request.form["post_id"]).first()
+    post = Post.query.filter_by(id=request.form.get("post_id")).first()
     if post is not None and is_current_user(post.author.id):
-        post.remove_tag(request.form["tag"])
+        post.remove_tag(request.form.get("tag"))
         db.session.commit()
         return jsonify()
     else:
