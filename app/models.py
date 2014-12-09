@@ -108,7 +108,7 @@ class Post(db.Model):
 
     @classmethod
     def get_visible_posts(cls, start=0, end=5):
-        return cls.query.filter(cls.publish_time <= datetime.now()).order_by(Post.id.desc()).limit(end)[start:]
+        return cls.query.filter(cls.publish_time <= datetime.now()).order_by(Post.id.desc())[start:end]
 
     def is_archived(self):
         return self.is_closed() and any(submission.won for submission in self.submissions.all())
@@ -117,7 +117,7 @@ class Post(db.Model):
     def get_archived_posts(cls, start=0, end=5):
         return cls.query.join(Submission).filter(cls.publish_time <= datetime.now(),
                                                  Submission.won,
-                                                 Submission.post_id == cls.id).order_by(Post.id.desc()).limit(end)[start:]
+                                                 Submission.post_id == cls.id).order_by(Post.id.desc())[start:end]
 
     def are_submissions_open(self):
         return self.is_visible() and self.get_closing_datetime() > datetime.now()
@@ -126,7 +126,7 @@ class Post(db.Model):
     def get_open_posts(cls, start=0, end=5):
         return cls.query.filter(cls.publish_time <= datetime.now(),
                                 cls.publish_time > (datetime.now() - timedelta(days=7))
-                                ).order_by(Post.id.desc()).limit(end)[start:]
+                                ).order_by(Post.id.desc())[start:end]
 
     def is_closed(self):
         return self.is_visible() and not self.are_submissions_open()
@@ -135,7 +135,7 @@ class Post(db.Model):
     def get_closed_posts(cls, start=0, end=5):
         return db.session.query(cls).filter(cls.publish_time <= datetime.now() - timedelta(days=7),
                                             ~exists().where(and_(cls.id == Submission.post_id,
-                                                               Submission.won))).limit(end)[start:]
+                                                               Submission.won)))[start:end]
 
     def get_difficulty_string(self):
         return {
