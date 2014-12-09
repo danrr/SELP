@@ -44,6 +44,14 @@ class TestUserModel(BaseTest):
         self.assertEqual(self.user.get_rank(), 1)
         self.assertEqual(user1.get_rank(), 2)
 
+    def test_user_model_get_olympic_rankings(self):
+        user = User('dana', 'a@a.com', '12345')
+        db.session.add(self.user)
+        db.session.add(user)
+        self.assertEqual(User.get_olympic_rankings(), [(1, self.user), (1, user)])
+        self.user.score = 10
+        self.assertEqual(User.get_olympic_rankings(), [(1, self.user), (2, user)])
+
 
 class TestPostModel(BaseTest):
     def test_post_model_can_init(self):
