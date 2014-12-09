@@ -111,7 +111,7 @@ def new_post():
         post.add_ingredients(form.ingredients.data)
         db.session.add(post)
         db.session.commit()
-        return redirect((url_for('home')))
+        return redirect((url_for('post', id=post.id)))
     return render_template('new-post.html',
                            title='New post',
                            form=form)
