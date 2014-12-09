@@ -23,9 +23,12 @@ class TestHomeView(BaseTest):
 
 
 class TestLoginView(BaseTest):
+    def setUp(self):
+        super(TestLoginView, self).setUp()
+        self.user = User(username='dan', email='dan@X.com', password='12345')
+        db.session.add(self.user)
+
     def test_login_works(self):
-        user = User(username='dan', email='dan@X.com', password='12345')
-        db.session.add(user)
         response = self.app.post('/login', data={
             'username': 'dan',
             'password': '12345'
@@ -34,8 +37,6 @@ class TestLoginView(BaseTest):
         self.assert_contains_string(response.data, 'Welcome back, dan')
 
     def test_login_fails_with_wrong_pass(self):
-        user = User(username='dan', email='dan@X.com', password='12345')
-        db.session.add(user)
         response = self.app.post('/login', data={
             'username': 'dan',
             'password': '1245'
@@ -45,8 +46,8 @@ class TestLoginView(BaseTest):
 
     def test_login_fails_with_no_user(self):
         response = self.app.post('/login', data={
-            'username': 'dan',
-            'password': '1234'
+            'username': 'dana',
+            'password': '12345'
         }, follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         self.assert_contains_string(response.data, 'No such user')
