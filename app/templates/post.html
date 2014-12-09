@@ -6,19 +6,19 @@
 
     <h3>Submissions</h3>
     <ul class="submissions">
-        {% for submission in submissions %}
-            <li data-author-id="{{ submission.author_id }}" {% if submission.won %}class="winning-submission"{% endif %}>
+        {% for submission in post.submissions.all() %}
+            <li data-author-id="{{ submission.submitter.id }}" {% if submission.won %}class="winning-submission"{% endif %}>
                 <span class="winner">Winner</span>
                 <span class="star"></span>
                 {% if post.is_closed() and can_edit %}
                     <a href="?winner={{ submission.id }}">Choose as winner</a>
                 {% endif %}
                 <div class="upvote" >
-                    <a {% if submission.user_upvoted %}class="on"{% endif %}>&#x25B2;</a>
-                    <span>{{submission.score}}</span>
+                    <a {% if is_logged_in and submission.has_user_upvoted(g.user.id) %}class="on"{% endif %}>&#x25B2;</a>
+                    <span>{{ submission.count_upvotes() }}</span>
                 </div>
-                <a href="{{ url_for('user', username=submission.author) }}">{{ submission.author }}</a>
-                <img src="{{submission.url}}" alt="submission by {{ submission.author }}" width="300px" height="300px">
+                <a href="{{ url_for('user', username=submission.submitter.username) }}">{{ submission.submitter.username }}</a>
+                <img src="{{submission.url}}" alt="submission by {{ submission.submitter.username }}" width="300px" height="300px">
                 <span>{{ submission.text }}</span>
             </li>
         {% endfor %}

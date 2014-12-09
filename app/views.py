@@ -208,23 +208,11 @@ def post(id):
 
     context = {
         'post': post,
-        'title': post.title,
+        'title': post.title,  # populates the title tag in the head of the page
+        'is_logged_in': is_user_logged_in(),
         'is_author': is_current_user(post.author.id),
         'can_edit': is_current_user(post.author.id) and not post.is_archived(),
-        'submissions': []
     }
-
-    for submission in Submission.query.filter_by(post_id=post.id).all():
-        context['submissions'] += [{
-            'id': submission.id,
-            'url': submission.url,
-            'text': submission.text,
-            'author': submission.submitter.username,
-            'author_id': submission.submitter.id,
-            'won': submission.won,
-            'score': submission.count_upvotes(),
-            'user_upvoted': is_user_logged_in() and submission.has_user_upvoted(g.user.id)
-        }]
 
     return render_template('post.html',
                            **context
