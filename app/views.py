@@ -298,9 +298,9 @@ def remove_tag():
 
 @app.route('/addtag/', methods=["POST"])
 def add_tag():
-    post = Post.query.filter_by(id=request.form["post_id"]).first()
+    post = Post.query.filter_by(id=request.form.get("post_id")).first()
     if post is not None:
-        tag = post.add_tag(request.form["tag"])
+        tag = post.add_tag(request.form.get("tag"))
         db.session.commit()
         if tag:
             return jsonify({
@@ -394,7 +394,6 @@ def get_more():
         return jsonify({
             "success": False
         })
-
 
 
 #helpers
