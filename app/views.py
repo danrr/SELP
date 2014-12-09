@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from flask import render_template, redirect, flash, g, url_for, request, jsonify, get_template_attribute
 from flask.ext.login import login_user, current_user, logout_user, login_required
 from app import app, login_manager, db
-from app.config import MAX_SEARCH_RESULTS
+from app.config import MAX_SEARCH_RESULTS, SHOW_IN_ONE_GO
 from app.forms import LoginForm, RegistrationForm, PostForm, SubmissionForm, SearchForm
 from app.models import User, Post, Submission
 from app.helpers import is_current_user, is_user_logged_in
@@ -339,7 +339,6 @@ def search_results():
 @app.route('/getmore/', methods=["POST"])
 def get_more():
     start = int(request.form.get("start"))
-    stop = int(request.form.get("stop"))
     rendered_posts = []
     template = get_template_attribute('partials/_post.html', "post_template")
     posts = []
@@ -347,11 +346,11 @@ def get_more():
     if page == "home":
         status = request.form.get("status")
         if status == "open":
-            posts = Post.get_open_posts(start, stop)
+            posts = Post.get_open_posts(start)
         if status == "closed":
-            posts = Post.get_closed_posts(start, stop)
+            posts = Post.get_closed_posts(start)
         if status == "archived":
-            posts = Post.get_archived_posts(start, stop)
+            posts = Post.get_archived_posts(start)
     if posts:
         for post in posts:
             post_html = template(page=page, post=post)

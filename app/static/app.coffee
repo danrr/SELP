@@ -19,11 +19,6 @@ timer = ->
         , 1000
 
 
-window.offsets =
-    'open': 5
-    'closed': 5
-    'archived': 5
-
 load = ->
 
     timer()
@@ -121,10 +116,9 @@ load = ->
                 page: page
                 status: status
                 start: window.offsets[status]
-                stop: window.offsets[status] + 5
             success: (data) ->
                 if data.success
-                    window.offsets[status] += 5
+                    window.offsets[status] += data.posts.length
                     for post in data.posts
                         $el.before(post)
                 else
