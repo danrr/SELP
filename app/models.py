@@ -8,7 +8,7 @@ from sqlalchemy.orm.exc import NoResultFound
 import flask.ext.whooshalchemy as whooshalchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import db, app
-from app.config import imgur_client_id, imgur_client_secret
+from app.config import imgur_client_id, imgur_client_secret, SHOW_IN_ONE_GO
 
 upvotes = db.Table("upvotes",
                    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
@@ -107,14 +107,20 @@ class Post(db.Model):
         return self.publish_time <= datetime.now()
 
     @classmethod
-    def get_visible_posts(cls, start=0, end=5):
+    def get_visible_posts(cls, start=0, step=None):
+        if step is None:
+            step = SHOW_IN_ONE_GO
+        end = start + step
         return cls.query.filter(cls.publish_time <= datetime.now()).order_by(Post.id.desc())[start:end]
 
     def is_archived(self):
         return self.is_closed() and any(submission.won for submission in self.submissions.all())
 
     @classmethod
-    def get_archived_posts(cls, start=0, end=5):
+    def get_archived_posts(cls, start=0, step=None):
+        if step is None:
+            step = SHOW_IN_ONE_GO
+        end = start + step
         return cls.query.join(Submission).filter(cls.publish_time <= datetime.now(),
                                                  Submission.won,
                                                  Submission.post_id == cls.id).order_by(Post.id.desc())[start:end]
@@ -123,7 +129,10 @@ class Post(db.Model):
         return self.is_visible() and self.get_closing_datetime() > datetime.now()
 
     @classmethod
-    def get_open_posts(cls, start=0, end=5):
+    def get_open_posts(cls, start=0, step=None):
+        if step is None:
+            step = SHOW_IN_ONE_GO
+        end = start + step
         return cls.query.filter(cls.publish_time <= datetime.now(),
                                 cls.publish_time > (datetime.now() - timedelta(days=7))
                                 ).order_by(Post.id.desc())[start:end]
@@ -132,7 +141,10 @@ class Post(db.Model):
         return self.is_visible() and not self.are_submissions_open()
 
     @classmethod
-    def get_closed_posts(cls, start=0, end=5):
+    def get_closed_posts(cls, start=0, step=None):
+        if step is None:
+            step = SHOW_IN_ONE_GO
+        end = start + step
         return db.session.query(cls).filter(cls.publish_time <= datetime.now() - timedelta(days=7),
                                             ~exists().where(and_(cls.id == Submission.post_id,
                                                                Submission.won)))[start:end]

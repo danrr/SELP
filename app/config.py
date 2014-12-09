@@ -10,3 +10,5 @@ imgur_client_secret = '321511b8f8dae2b5d9aa89eb3afcbbff392356a4'
 
 WHOOSH_BASE = os.path.join(basedir, 'search.db')
 MAX_SEARCH_RESULTS = 50
+
+SHOW_IN_ONE_GO = 5  # number of posts or submissions methods that return lists of them should return by default
