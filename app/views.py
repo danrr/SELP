@@ -1,4 +1,3 @@
-import re
 import os
 from sqlalchemy.exc import IntegrityError
 from werkzeug.utils import secure_filename
@@ -8,7 +7,7 @@ from app import app, login_manager, db
 from app.config import MAX_SEARCH_RESULTS, SHOW_IN_ONE_GO
 from app.forms import LoginForm, RegistrationForm, PostForm, SubmissionForm, SearchForm
 from app.models import User, Post, Submission
-from app.helpers import is_current_user, is_user_logged_in
+from app.helpers import is_current_user, is_user_logged_in, parse_search_query
 
 
 @app.before_request
@@ -291,19 +290,8 @@ def add_tag():
 def search():
     if not g.search_form.validate_on_submit():
         return redirect(url_for('index'))
-    full_query = g.search_form.search.data
 
-    difficulty = re.search("(?<=difficulty:)\s*(beginner|intermediate|novice|hard|expert)", full_query, flags=re.IGNORECASE)
-    if difficulty:
-        difficulty = difficulty.group(0)
-    query = re.sub("difficulty:\s*(beginner|intermediate|novice|hard|expert)", "", full_query, flags=re.IGNORECASE)
-
-    tag = re.search("(?<=tag:)\s*[a-z0-9]+", query, flags=re.IGNORECASE)
-    if tag:
-        tag = tag.group(0)
-    query = re.sub("tag:\s*[a-z0-9]+", "", query, flags=re.IGNORECASE)
-
-    query = re.sub("\s+$", "", query)
+    query, difficulty, tag = parse_search_query(g.search_form.search.data)
 
     return redirect(url_for('search_results', query=query, difficulty=difficulty, tag=tag))
 
