@@ -265,7 +265,7 @@ def rankings():
     users_context = []
     i = 0
     while i < len(users):
-        #olympic rankings
+        #olympic rankings - users with the same score are at the same rank
         users_context.append({
             "username": users[i].username,
             "score": users[i].score,
