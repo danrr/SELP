@@ -1,3 +1,5 @@
+import datetime
+from flask import g
 from mock import Mock, patch
 from app import db
 from app.models import User, Post, Submission
@@ -112,3 +114,21 @@ class TestUserView(BaseTest):
         self.assert_contains_string(response.data, "POSTTITLE")
         self.assert_contains_string(response.data, "SUBMISSIONTEXT")
 
+
+class TestNewPostView(BaseTest):
+    def test_post_view_displays(self):
+        response = self.app.get('/post/new')
+        self.assertEqual(response.status_code, 200)
+        self.assert_contains_string(response.data, "ingredients-0")
+
+    @patch('app.views.current_user', Mock(id=1))
+    def test_post_view_creates_new_post(self):
+        self.assertEqual(Post.query.count(), 0)
+        self.app.post('/post/new', data={
+            'title': 'title',
+            'body': 'body',
+            'start_time': datetime.datetime.now().strftime("%d-%m-%Y %H:%M"),
+            'difficulty': 1,
+            'ingredients-0': 'ingredients-0'
+        })
+        self.assertEqual(Post.query.count(), 1)
