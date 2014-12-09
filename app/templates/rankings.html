@@ -14,10 +14,10 @@
                     Score
                 </th>
             </tr>
-            {% for user in users %}
+            {% for rank, user in ranked_users %}
                 <tr>
                     <td>
-                        {{ user.rank }}
+                        {{ rank }}
                     </td>
                     <td>
                         <a href="{{ url_for('user', username=user.username) }}">{{ user.username }}</a>

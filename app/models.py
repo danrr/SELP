@@ -57,6 +57,24 @@ class User(db.Model):
     def get_rank(self):
         return self.__class__.query.filter(self.__class__.score > self.score).count() + 1
 
+    @classmethod
+    def get_olympic_rankings(cls):
+        """ Return list of tuples of the form (rank, user) in order score.
+        Users with the same score will have the same rank - olympic ranking
+        """
+        users = cls.query.order_by(cls.score.desc()).all()
+        users_list = []
+        i = 0
+        while i < len(users):
+
+            users_list.append((i + 1, users[i]))
+            i += 1
+            while i < len(users) and users[i-1].score == users[i].score:
+                # place users with the same score on the same rank
+                users_list.append((users_list[i-1][0], users[i]))
+                i += 1
+        return users_list
+
     def __repr__(self):
         return '<User {username}>'.format(username=self.username)
 

@@ -1,4 +1,3 @@
-from app.config import MAX_SEARCH_RESULTS
 import re
 import os
 from sqlalchemy.exc import IntegrityError
@@ -6,8 +5,10 @@ from werkzeug.utils import secure_filename
 from flask import render_template, redirect, flash, g, url_for, request, jsonify, get_template_attribute
 from flask.ext.login import login_user, current_user, logout_user, login_required
 from app import app, login_manager, db
+from app.config import MAX_SEARCH_RESULTS
 from app.forms import LoginForm, RegistrationForm, PostForm, SubmissionForm, SearchForm
 from app.models import User, Post, Submission
+from app.helpers import is_current_user, is_user_logged_in
 
 
 @app.before_request
@@ -249,28 +250,9 @@ def upvote():
 
 @app.route('/rankings/')
 def rankings():
-    users = User.query.order_by(User.score.desc()).all()
-    users_context = []
-    i = 0
-    while i < len(users):
-        #olympic rankings - users with the same score are at the same rank
-        users_context.append({
-            "username": users[i].username,
-            "score": users[i].score,
-            "rank": i + 1
-        })
-        i += 1
-        while i < len(users) and users[i-1].score == users[i].score:
-            users_context.append({
-                "username": users[i].username,
-                "score": users[i].score,
-                "rank": users_context[i - 1]["rank"]
-            })
-            i += 1
-
     return render_template('rankings.html',
                            title="rankings",
-                           users=users_context)
+                           ranked_users=User.get_olympic_rankings())
 
 
 @app.route('/removetag/', methods=["POST"])
@@ -382,15 +364,6 @@ def get_more():
         return jsonify({
             "success": False
         })
-
-
-#helpers
-def is_user_logged_in():
-    return g.user is not None and g.user.is_authenticated()
-
-
-def is_current_user(user_id):
-    return is_user_logged_in() and g.user.id == user_id
 
 
 @login_manager.user_loader
