@@ -8,7 +8,7 @@
             {% for post in posts %}
                 {{ post_template("home", post) }}
             {% endfor %}
-            <a class="show-more-posts" data-status="{{status}}" data-page="home">Show more</a>
+            <a class="btn btn-success show-more-posts" data-status="{{status}}" data-page="home">Show more</a>
         </div>
     {% endfor %}
 {% endblock %}
