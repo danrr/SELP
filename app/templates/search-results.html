@@ -7,7 +7,9 @@
             {% for post in posts %}
                 {{ post_template("home", post) }}
             {% endfor %}
-            <a>Show more</a>
+            <a class="show-more-posts" data-page="search" data-status="search" data-query="{{ query_string }}">
+                Show more
+            </a>
         </div>
     {% else %}
         <span class="alert alert-danger" role="alert">

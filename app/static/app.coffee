@@ -109,12 +109,14 @@ load = ->
         $el = $(e.currentTarget)
         page = $el.data("page")
         status = $el.data("status")
+        query = $el.data("query")
         $.ajax
             url : "/getmore/"
             type: "POST"
             data:
                 page: page
                 status: status
+                query: query
                 start: window.offsets[status]
             success: (data) ->
                 if data.success

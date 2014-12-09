@@ -305,7 +305,8 @@ def search_results():
     g.search_form.search.data = query_string
     return render_template('search-results.html',
                            title="Search",
-                           posts=Post.get_searched_posts(query, tag, difficulty))
+                           posts=Post.get_searched_posts(query, tag, difficulty),
+                           query_string=query_string)
 
 
 @app.route('/getmore/', methods=["POST"])
@@ -323,6 +324,9 @@ def get_more():
             posts = Post.get_closed_posts(start)
         if status == "archived":
             posts = Post.get_archived_posts(start)
+    if page == "search":
+        query, difficulty, tag = parse_search_query(request.form.get("query"))
+        posts = Post.get_searched_posts(query, difficulty=difficulty, tag=tag, start=start)
     if posts:
         for post in posts:
             post_html = template(page=page, post=post)
