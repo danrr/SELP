@@ -87,7 +87,7 @@ def user(username):
     user = User.query.filter_by(username=username).first()
 
     if user is None:
-        flash('User {username} not found.'.format(username=username))
+        flash('User {username} not found.'.format(username=username), 'error')
         return redirect(url_for('home'))
 
     context = {
@@ -131,7 +131,7 @@ def post(id):
     if is_current_user(post.author.id):
         if request.args.get('edit', '') == "1":
             if post.is_archived():
-                flash('Archived posts cannot be modified')
+                flash('Archived posts cannot be modified', 'error')
                 return reload_page()
 
             form = PostForm()
