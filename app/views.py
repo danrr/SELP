@@ -7,7 +7,7 @@ from app import app, login_manager, db
 from app.config import MAX_SEARCH_RESULTS, SHOW_IN_ONE_GO
 from app.forms import LoginForm, RegistrationForm, PostForm, SubmissionForm, SearchForm
 from app.models import User, Post, Submission
-from app.helpers import is_current_user, is_user_logged_in, parse_search_query
+from app.helpers import is_current_user, is_user_logged_in, parse_search_query, build_query_string
 
 
 @app.before_request
@@ -298,25 +298,18 @@ def search():
 
 @app.route('/search_results/')
 def search_results():
-    query_string = ""
     query = request.args.get("query")
+    tag = request.args.get("tag")
+    difficulty = request.args.get("difficulty")
+    query_string = build_query_string(query, tag, difficulty)
     if query:
         results = Post.query.whoosh_search(query, MAX_SEARCH_RESULTS).all()
-        query_string = query
     else:
         results = Post.query.limit(MAX_SEARCH_RESULTS)
-    tag = request.args.get("tag")
     if tag:
         results = [result for result in results if any(tag == t.name for t in result.tags.all())]
-        if query_string:
-            query_string += " "
-        query_string += "tag:" + tag
-    difficulty = request.args.get("difficulty")
     if difficulty:
         results = [result for result in results if result.get_difficulty_string().lower() == difficulty]
-        if query_string:
-            query_string += " "
-        query_string += "difficulty:" + difficulty
     results = results[:5]
     g.search_form.search.data = query_string
     return render_template('search-results.html',

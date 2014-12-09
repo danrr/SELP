@@ -24,3 +24,17 @@ def parse_search_query(full_query):
     query = re.sub("\s+$", "", query)
 
     return query, difficulty, tag
+
+
+def build_query_string(query, tag=None, difficulty=None):
+    query_string = (query or "")
+    if tag:
+        if query_string:
+            query_string += " "
+        query_string += "tag:" + tag
+    if difficulty:
+        if query_string:
+            query_string += " "
+        query_string += "difficulty:" + difficulty
+
+    return query_string
