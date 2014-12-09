@@ -19,7 +19,7 @@
                 <form action="{{ url_for('search') }}" method="post" name="search" class="input-group">
                     {{ g.search_form.hidden_tag() }}
                     {{ g.search_form.search(size=20, class="form-control", required="",
-                                            title="Search syntax: <terms>; difficulty:<difficulty> tag:<tag>") }}
+                                            title="Search syntax: <terms> difficulty:<difficulty>(only one) tag:<tag>(only one)") }}
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="submit">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
