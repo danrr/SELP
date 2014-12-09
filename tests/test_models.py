@@ -167,6 +167,20 @@ class TestPostModel(BaseTest):
         db.session.commit()
         self.assertEqual(Post.get_archived_posts(), [post])
 
+    def test_post_model_searched_terms(self):
+        date = datetime.today() - timedelta(10)
+        post = Post('Title', 'Body', user_id=1, publish_time=date, difficulty=3)
+        post.add_tag("tag")
+        db.session.add(post)
+        db.session.commit()
+        self.assertEqual(Post.get_searched_posts("Title"), [post])
+        self.assertEqual(Post.get_searched_posts("fish"), [])
+        self.assertEqual(Post.get_searched_posts("", tag="cake"), [])
+        self.assertEqual(Post.get_searched_posts("", tag="tag"), [post])
+        self.assertEqual(Post.get_searched_posts("", difficulty="Intermediate"), [post])
+        self.assertEqual(Post.get_searched_posts("", difficulty="Hard"), [])
+        self.assertEqual(Post.get_searched_posts("Title", tag="tag", difficulty="Intermediate"), [post])
+
     def test_post_model_difficulty_string(self):
         post = Post('Title', 'Body', 1, difficulty=1)
         self.assertEqual(post.get_difficulty_string(), "Beginner")

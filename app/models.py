@@ -149,6 +149,29 @@ class Post(db.Model):
                                             ~exists().where(and_(cls.id == Submission.post_id,
                                             Submission.won)))[start:end]
 
+    @classmethod
+    def get_searched_posts(cls, search_terms=None, tag=None, difficulty=None, start=0, step=None):
+        if step is None:
+            step = SHOW_IN_ONE_GO
+        end = start + step
+        query = cls.query
+        if difficulty:
+
+            difficulty = {
+                "Beginner": 1,
+                "Novice": 2,
+                "Intermediate": 3,
+                "Hard": 4,
+                "Expert": 5
+            }.get(difficulty.title(), 3)
+
+            query = query.filter(cls.difficulty == difficulty)
+        if tag:
+            query = query.join(cls.tags, aliased=True).filter_by(name=tag)
+        if search_terms:
+            query = query.whoosh_search(search_terms)
+        return query[start:end]
+
     def get_difficulty_string(self):
         return {
             1: "Beginner",
@@ -282,6 +305,6 @@ class Tag(db.Model):
 
     def __init__(self, name):
         self.name = name
-        
+
     def __repr__(self):
         return "<Tag {name}>".format(name=self.name)
