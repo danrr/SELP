@@ -1,5 +1,6 @@
+from mock import Mock, patch
 from app import db
-from app.models import User, Post
+from app.models import User, Post, Submission
 from tests.base_test import BaseTest
 
 
@@ -88,3 +89,26 @@ class TestRegisterView(BaseTest):
         }, follow_redirects=True)
         self.assertEqual(response.status_code, 200)
         self.assert_contains_string(response.data, 'dan@X.com already used')
+
+
+class TestUserView(BaseTest):
+    def test_user_view_redirects_when_user_not_found(self):
+        response = self.app.get('/user/dan/')
+        self.assertEqual(response.status_code, 302)
+
+    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    def test_user_view_displays_posts_and_submissions(self):
+        user = User(username='dan', email='dan@X.com', password='12345')
+        db.session.add(user)
+        db.session.commit()
+        post = Post(title="POSTTITLE", body="POSTBODY", user_id=user.id, difficulty=1)
+        db.session.add(post)
+        db.session.commit()
+        submission = Submission(path="a/b/c", text="SUBMISSIONTEXT", user_id=user.id, post_id=post.id)
+        db.session.add(submission)
+        db.session.commit()
+        response = self.app.get('/user/{username}/'.format(username=user.username))
+        self.assertEqual(response.status_code, 200)
+        self.assert_contains_string(response.data, "POSTTITLE")
+        self.assert_contains_string(response.data, "SUBMISSIONTEXT")
+
