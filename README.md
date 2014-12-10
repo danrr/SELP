@@ -32,7 +32,7 @@ To recompile the static assets, run *source compile_js.sh* for the coffeescript 
   * app.db - SQLite database for the app
   * config.py - configuration file for the app
   * forms.py - file containing all the WTforms objects
-  * helpers.py
+  * helpers.py - file containing helper functions for use in views
   * models.py - file containing all the models used by SQLalchemy to interact with the db
   * views.py
 * scripts - module containing scripts used to manage the database
@@ -48,6 +48,7 @@ To recompile the static assets, run *source compile_js.sh* for the coffeescript 
   * test_config.py - configuration file used by test app
   * test_models.py - unit tests around SQLalchemy models
   * test_views.py - integration tests around view functions
+  * test_helpers.py - unit tests around helper functions
 * uploads - temp storage for image uploads
 
 ###Proposal###
