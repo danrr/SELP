@@ -213,6 +213,9 @@ class Post(db.Model):
         }.get(self.difficulty, "Intermediate")
 
     def add_tag(self, name):
+        """Adds a tag to a post given a string. If the tag does not exist in the database it creates it.
+        Return tag object on success, None otherwise
+        """
         try:
             tag = Tag.query.filter(Tag.name == name).one()
         except NoResultFound:
