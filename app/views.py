@@ -17,6 +17,7 @@ def before_request():
 
 @app.route("/", methods=["GET"])
 def home():
+    """Displays the home page"""
     context = {
         'title': 'Cooking challenge',
         'annotated_posts': [('open', 'Open posts', Post.get_open_posts()),
@@ -29,6 +30,7 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Displays login form and handles user login"""
     if is_user_logged_in():
         return redirect(url_for('home'))
 
@@ -54,6 +56,7 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """Displays registration form and handles user creation """
     form = RegistrationForm()
     if form.validate_on_submit():
         old_user = User.query.filter_by(username=form.username.data).first()
@@ -83,6 +86,7 @@ def logout():
 @app.route('/user/<username>/')
 @login_required
 def user(username):
+    """Displays user pages with posts and submissions belonging to the user"""
     user = User.query.filter_by(username=username).first()
 
     if user is None:
@@ -100,6 +104,7 @@ def user(username):
 @app.route('/post/new', methods=['GET', 'POST'])
 @login_required
 def new_post():
+    """Displays new page form and handles post creation"""
     form = PostForm()
     if form.validate_on_submit():
         post = Post(title=form.title.data,
@@ -118,6 +123,9 @@ def new_post():
 
 @app.route('/post/<int:id>/', methods=['GET', 'POST'])
 def post(id):
+    """Handles displaying the page, and all operations done on the page:
+    edit, delete, submit an entry, and choose winner
+    """
     def reload_page():
         return redirect(url_for('post', id=id))
 
@@ -220,6 +228,7 @@ def post(id):
 
 @app.route('/upvote/', methods=['POST'])
 def upvote():
+    """Handles requests to add and remove upvotes from submissions"""
     if request.form.get("type") == "submission":  # type can be used for upvoting other things, not just submissions
         if is_user_logged_in():
             post = Post.query.filter_by(id=request.form.get("post_id")).first()
@@ -248,6 +257,7 @@ def upvote():
 
 @app.route('/rankings/')
 def rankings():
+    """Displays rankings"""
     return render_template('rankings.html',
                            title="rankings",
                            ranked_users=User.get_olympic_rankings())
@@ -255,6 +265,7 @@ def rankings():
 
 @app.route('/removetag/', methods=["POST"])
 def remove_tag():
+    """Handles requests sent by javascript to remove a tag from a page"""
     post = Post.query.filter_by(id=request.form.get("post_id")).first()
     if post is not None and is_current_user(post.author.id):
         post.remove_tag(request.form.get("tag"))
@@ -266,6 +277,7 @@ def remove_tag():
 
 @app.route('/addtag/', methods=["POST"])
 def add_tag():
+    """Handles requests sent by javascript to add a tag to a page"""
     post = Post.query.filter_by(id=request.form.get("post_id")).first()
     if post is not None:
         tag = post.add_tag(request.form.get("tag"))
@@ -287,6 +299,7 @@ def add_tag():
 
 @app.route('/search/', methods=["POST"])
 def search():
+    """Handles requests sent by the search form. Redirects to results page."""
     if not g.search_form.validate_on_submit():
         return redirect(url_for('index'))
 
@@ -297,6 +310,7 @@ def search():
 
 @app.route('/search_results/')
 def search_results():
+    """Displays results page"""
     query = request.args.get("query")
     tag = request.args.get("tag")
     difficulty = request.args.get("difficulty")
@@ -311,6 +325,7 @@ def search_results():
 
 @app.route('/getmore/', methods=["POST"])
 def get_more():
+    """Handles requests for more post and submissions when a user presses "Show more" """
     start = int(request.form.get("start"))
     rendered_posts = []
     template = get_template_attribute('partials/_post.html', "post_template")

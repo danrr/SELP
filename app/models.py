@@ -80,6 +80,13 @@ class User(db.Model):
 
 
 class Post(db.Model):
+    """Post model types:
+     visible - publish_time is in the past
+     open - post is visible and 7 days have not passed since being published; entries can be submitted
+     closed - post is visible and more than 7 days have passed since being published; entries are not allowed, author
+        decides on winning entry
+     archived - post was closed and a winning entry was chosen; cannot be modified by author
+     """
     __searchable__ = ['title', 'body']
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
@@ -108,6 +115,10 @@ class Post(db.Model):
 
     @classmethod
     def get_visible_posts(cls, start=0, step=None):
+        """Returns visible posts from start to start+step.
+        If start is not pass, returns the first step posts.
+        If step is not passed returns posts from start to start + config.SHOW_IN_ONE_GO
+        """
         if step is None:
             step = SHOW_IN_ONE_GO
         end = start + step
@@ -118,6 +129,10 @@ class Post(db.Model):
 
     @classmethod
     def get_archived_posts(cls, start=0, step=None):
+        """Returns archived posts from start to start+step.
+        If start is not pass, returns the first step posts.
+        If step is not passed returns posts from start to start + config.SHOW_IN_ONE_GO
+        """
         if step is None:
             step = SHOW_IN_ONE_GO
         end = start + step
@@ -130,6 +145,10 @@ class Post(db.Model):
 
     @classmethod
     def get_open_posts(cls, start=0, step=None):
+        """Returns open posts from start to start+step.
+        If start is not pass, returns the first step posts.
+        If step is not passed returns posts from start to start + config.SHOW_IN_ONE_GO
+        """
         if step is None:
             step = SHOW_IN_ONE_GO
         end = start + step
@@ -142,6 +161,10 @@ class Post(db.Model):
 
     @classmethod
     def get_closed_posts(cls, start=0, step=None):
+        """Returns closed posts from start to start+step.
+        If start is not pass, returns the first step posts.
+        If step is not passed returns posts from start to start + config.SHOW_IN_ONE_GO
+        """
         if step is None:
             step = SHOW_IN_ONE_GO
         end = start + step
@@ -151,6 +174,12 @@ class Post(db.Model):
 
     @classmethod
     def get_searched_posts(cls, search_terms=None, tag=None, difficulty=None, start=0, step=None):
+        """Returns searched posts from start to start+step.
+        If start is not pass, returns the first step posts.
+        If step is not passed returns posts from start to start + config.SHOW_IN_ONE_GO.
+        Search criteria are: contains search_terms, has tag, and is of difficulty.
+        These can be combined to generate the intersections.
+        """
         if step is None:
             step = SHOW_IN_ONE_GO
         end = start + step
