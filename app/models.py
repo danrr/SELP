@@ -58,7 +58,7 @@ class User(db.Model):
 
     @classmethod
     def get_olympic_rankings(cls):
-        """ Return list of tuples of the form (rank, user) in order score.
+        """ Return list of tuples of the form (rank, user) in order of score.
         Users with the same score will have the same rank - olympic ranking
         """
         users = cls.query.order_by(cls.score.desc()).all()
