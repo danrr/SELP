@@ -33,13 +33,20 @@ The only part of the app that I feel could pose issues when expanding would be t
 
 ####Database####
 
+The design of the database has been a very iterative process, with new models, tables, and attributes being added as needed, the requirements of new features driving the modifications to the database. The user model was first added for the account functionality, the post model was added to display stored content on the home page, the tag model was added when the ability to tag posts was put in place. This approach has meant that very little effort was spent on database structures that were not used. 
+
+The following diagrams show the current database schema used by the app.
+
 <span style="display:block; text-align: center"> 
 ![Diagram of the main components of the database: User, Post and Submission](http://i.imgur.com/phkObpp.png)
 <span>Diagram of the main components of the database: User, Post and Submission</span>
 </span>
 
-
 <span style="float: right; display:block; text-align: center">
 ![Diagram of Post with the components related to it: Tag and Ingredient](http://i.imgur.com/Q6VEbbn.png)
 <span style="display: block; margin: 0 auto">Diagram of Post with the components related to it: Tag and Ingredient</span>
 </span>
+
+The current structure is described entirely in the models file, all tables and models with their attributes can be found in one place. To change the structure of the databases, one only needs to change the models described in this file, and run the *db\_migrate.py* and *db\_upgrade.py* scripts. The *db\_reset.py* script, responsible for populating an empty database, might also need to be modified though this is not required for the app to work. Major changes will require changes to the tests in *test\_models.py*.
+
+The app and test databases being generated and populated automatically make it easy to make changes to the repo locally against a mock database and then deploy the code without losing data on the production database or checking a database file into git. 
