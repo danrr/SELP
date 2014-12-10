@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 import math
-from mock import patch, Mock
 from imgurpython import ImgurClient
 from sqlalchemy import UniqueConstraint, exists, and_
 from sqlalchemy.exc import IntegrityError
