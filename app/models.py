@@ -84,8 +84,8 @@ class Post(db.Model):
      visible - publish_time is in the past
      open - post is visible and 7 days have not passed since being published; entries can be submitted
      closed - post is visible and more than 7 days have passed since being published; entries are not allowed, author
-        decides on winning entry
-     archived - post was closed and a winning entry was chosen; cannot be modified by author
+        decides on winning entry; if no submissions have happened, the post is automatically archived
+     archived - post was closed and a winning entry was chosen, if there were any entries; cannot be modified by author
      """
     __searchable__ = ['title', 'body']
     id = db.Column(db.Integer, primary_key=True)
@@ -125,7 +125,8 @@ class Post(db.Model):
         return cls.query.filter(cls.publish_time <= datetime.now()).order_by(Post.id.desc())[start:end]
 
     def is_archived(self):
-        return self.is_closed() and any(submission.won for submission in self.submissions.all())
+        return self.is_closed() and \
+            (not self.submissions or any(submission.won for submission in self.submissions.all()))
 
     @classmethod
     def get_archived_posts(cls, start=0, step=None):
