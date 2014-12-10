@@ -71,7 +71,7 @@ class TestPostModel(BaseTest):
         post = Post('Title', 'Body', 1, publish_time=date, difficulty=2)
         self.assertFalse(post.is_visible())
 
-    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    @patch('app.models.ImgurClient.upload_from_path', Mock(return_value={'link': ''}))
     @patch('app.models.Post.is_closed', Mock(return_value=True))
     def test_post_model_is_archived(self):
         user = User('dan', 'dan@aadf.com', '12345')
@@ -151,7 +151,7 @@ class TestPostModel(BaseTest):
         db.session.commit()
         self.assertEqual(Post.get_open_posts(), [post2])
 
-    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    @patch('app.models.ImgurClient.upload_from_path', Mock(return_value={'link': ''}))
     def test_post_model_get_archived(self):
         user = User('a', 'a@a.com', '12312')
         db.session.add(user)
@@ -239,7 +239,7 @@ class TestPostModel(BaseTest):
 
 
 class TestSubmissionModel(BaseTest):
-    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    @patch('app.models.ImgurClient.upload_from_path', Mock(return_value={'link': ''}))
     def setUp(self):
         super(TestSubmissionModel, self).setUp()
         self.user1 = User('Dan', 'aa@aa.com', '12345')
@@ -256,10 +256,10 @@ class TestSubmissionModel(BaseTest):
 
     @patch('app.models.ImgurClient.upload_from_path')
     def test_submission_model_can_init(self, patch_imgur):
+        patch_imgur.return_value={'link': ''}
         submission = Submission('a/b/c', 'abcdef', 1, 1)
         self.assertEqual(submission.text, 'abcdef')
-        # uncomment when imgur upload is enabled
-        # patch_imgur.assert_called_with('a/b/c', config=None, anon=True)
+        patch_imgur.assert_called_with('a/b/c', config=None, anon=True)
 
     def test_submission_model_knows_user_upvoted(self):
         self.assertTrue(self.submission.has_user_upvoted(self.user1.id))
@@ -284,7 +284,7 @@ class TestSubmissionModel(BaseTest):
         self.submission.votes.append(self.user2)
         self.assertEqual(self.submission.count_upvotes(), 2)
 
-    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    @patch('app.models.ImgurClient.upload_from_path', Mock(return_value={'link': ''}))
     @patch('app.models.User.increase_score')
     def test_submission_model_can_make_winner(self, mock_increase_score):
         submission1 = Submission('a/b/c', 'abcdef', user_id=self.user2.id, post_id=self.post.id)
@@ -295,7 +295,7 @@ class TestSubmissionModel(BaseTest):
         self.assertRaises(Exception, self.submission.make_winner)
         mock_increase_score.assert_has_calls([call(50), call(50), call(100), call(104)])
 
-    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    @patch('app.models.ImgurClient.upload_from_path', Mock(return_value={'link': ''}))
     def test_submission_model_does_not_allow_multiple_submissions(self):
         submission1 = Submission('a/b/c', 'abcdef', user_id=self.user1.id, post_id=self.post.id)
         db.session.add(submission1)

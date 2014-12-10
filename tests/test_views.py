@@ -98,7 +98,7 @@ class TestUserView(BaseTest):
         response = self.app.get('/user/dan/')
         self.assertEqual(response.status_code, 302)
 
-    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    @patch('app.models.ImgurClient.upload_from_path', Mock(return_value={'link': ''}))
     def test_user_view_displays_posts_and_submissions(self):
         user = User(username='dan', email='dan@X.com', password='12345')
         db.session.add(user)
@@ -135,7 +135,7 @@ class TestNewPostView(BaseTest):
 
 
 class TestPostView(BaseTest):
-    @patch('app.models.ImgurClient.upload_from_path', Mock())
+    @patch('app.models.ImgurClient.upload_from_path', Mock(return_value={'link': ''}))
     def setUp(self):
         super(TestPostView, self).setUp()
         self.user = User('mike', 'a@a.com', '12345')

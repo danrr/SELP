@@ -246,11 +246,9 @@ class Submission(db.Model):
                             lazy='dynamic'
                             )
 
-    @patch.object(ImgurClient, 'upload_from_path', Mock(return_value={'link': 'http://i.imgur.com/Sj6yA9J.jpg'}))
-    # remove mock when going into "production"
     def __init__(self, path, text, user_id, post_id):
-        # client = ImgurClient(imgur_client_id, imgur_client_secret)
-        self.url = 'http://i.imgur.com/Sj6yA9J.jpg'  # client.upload_from_path(path, config=None, anon=True)['link']
+        client = ImgurClient(imgur_client_id, imgur_client_secret)
+        self.url = client.upload_from_path(path, config=None, anon=True)['link']
         self.user_id = user_id
         self.post_id = post_id
         self.text = text
