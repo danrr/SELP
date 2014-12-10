@@ -16,7 +16,7 @@ To run the app run *source setup.sh*. This will initialize the app on port 5000.
 
 To run the python tests run *source run_tests.sh*.
 
-To recompile the static assets, run *source compile_js.sh* for the coffeescript and *compile_css.sh* for the SCSS
+To recompile the static assets, run *source compile\_js.sh* for the coffeescript and *compile\_css.sh* for the SCSS
 
 ###Structure###
 * app - module containing all the app specific files
