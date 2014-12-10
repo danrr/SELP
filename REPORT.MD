@@ -30,6 +30,11 @@ Although choice is great, it requires a careful reading of the documentation. On
 
 Another poor choice was using node.js to compile the coffeescript. Using node caused me to waste a good deal of time finding a good way to set up an isolated version of it. Although this is the best choice from a feature point of view, and if the project were to grow it might have been needed, there were simpler alternatives that would have covered my limited use, like using python-coffeescript or adding a javascript coffeescript parser from a CDN.
 
+####Refactoring and optimization####
+Many of the refactorings I performed have removed code from the view functions. This was done to remove complex database queries or data manipulation and keep the view functions *pure*, which helps with testing and keeps similar code together.
+
+One such refactoring was done on the search endpoints. The functions that parsed the query string and generated a cleaned up string were pulled out into *helpers.py* and had unit test created for them. The database query was pulled into the Post model with the other methods that return lists of posts, and list comprehensions over large lists of posts obtained by first searching for the terms were replaced by query composition leveraging the power of SQL and SQLalchemy.
+
 ###Structure###
 ####Code####
 The repository is split into modules that have specific functions, for example the test code and databases can be found in the *tests* module. The structure of the repository has not changed drastically over the development of the application; I settled on this division of code early in the architecture phase and it was sensible enough to not need any major revision. A detailed description of the structure of the repo can be found in the readme file.
