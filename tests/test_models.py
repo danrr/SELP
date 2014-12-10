@@ -48,9 +48,9 @@ class TestUserModel(BaseTest):
         user = User('dana', 'a@a.com', '12345')
         db.session.add(self.user)
         db.session.add(user)
-        self.assertEqual(User.get_olympic_rankings(), [(1, self.user), (1, user)])
+        self.assertEqual(User.get_full_rankings(), [(1, self.user), (1, user)])
         self.user.score = 10
-        self.assertEqual(User.get_olympic_rankings(), [(1, self.user), (2, user)])
+        self.assertEqual(User.get_full_rankings(), [(1, self.user), (2, user)])
 
 
 class TestPostModel(BaseTest):

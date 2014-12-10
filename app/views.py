@@ -260,7 +260,7 @@ def rankings():
     """Displays rankings"""
     return render_template('rankings.html',
                            title="rankings",
-                           ranked_users=User.get_olympic_rankings())
+                           ranked_users=User.get_full_rankings())
 
 
 @app.route('/removetag/', methods=["POST"])

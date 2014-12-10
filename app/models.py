@@ -57,7 +57,7 @@ class User(db.Model):
         return self.__class__.query.filter(self.__class__.score > self.score).count() + 1
 
     @classmethod
-    def get_olympic_rankings(cls):
+    def get_full_rankings(cls):
         """ Return list of tuples of the form (rank, user) in order of score.
         Users with the same score will have the same rank - olympic ranking
         """
