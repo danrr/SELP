@@ -21,6 +21,7 @@ The main features that I mentioned in the proposal have been implemented and are
 - users can look up posts based on their title, body, tags or difficulty using the search feature
 - users can dynamically load more posts when not all are shown
 
+###Development###
 
 
 ###Structure###
@@ -52,3 +53,8 @@ The following diagrams show the current database schema used by the app.
 The current structure is described entirely in the models file, all tables and models with their attributes can be found in one place. To change the structure of the databases, one only needs to change the models described in this file, and run the *db\_migrate.py* and *db\_upgrade.py* scripts. The *db\_reset.py* script, responsible for populating an empty database, might also need to be modified though this is not required for the app to work. Major changes will require changes to the tests in *test\_models.py*.
 
 The app and test databases being generated and populated automatically make it easy to make changes to the repo locally against a mock database and then deploy the code without losing data on the production database or checking a database file into git. 
+
+###Test strategy###
+
+
+###Conclusion###
