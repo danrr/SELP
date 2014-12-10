@@ -8,7 +8,7 @@ from sqlalchemy.orm.exc import NoResultFound
 import flask.ext.whooshalchemy as whooshalchemy
 from werkzeug.security import check_password_hash, generate_password_hash
 from app import db, app
-from app.config import imgur_client_id, imgur_client_secret, SHOW_IN_ONE_GO
+from app.config import imgur_client_id, imgur_client_secret, SHOW_IN_ONE_GO, DAY_POST_OPEN
 
 upvotes = db.Table("upvotes",
                    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
@@ -82,9 +82,11 @@ class User(db.Model):
 class Post(db.Model):
     """Post model types:
      visible - publish_time is in the past
-     open - post is visible and 7 days have not passed since being published; entries can be submitted
-     closed - post is visible and more than 7 days have passed since being published; entries are not allowed, author
-        decides on winning entry; if no submissions have happened, the post is automatically archived
+     open - post is visible and config.DAY_POST_OPEN days have not passed since being published;
+            entries can be submitted
+     closed - post is visible and more than config.DAY_POST_OPEN days have passed since being published;
+            entries are not allowed, author decides on winning entry; if no submissions have happened, the post is
+            automatically archived
      archived - post was closed and a winning entry was chosen, if there were any entries; cannot be modified by author
      """
     __searchable__ = ['title', 'body']
@@ -108,7 +110,7 @@ class Post(db.Model):
         self.publish_time = publish_time
 
     def get_closing_datetime(self):
-        return self.publish_time + timedelta(days=7)
+        return self.publish_time + timedelta(days=DAY_POST_OPEN)
 
     def is_visible(self):
         return self.publish_time <= datetime.now()
@@ -154,7 +156,7 @@ class Post(db.Model):
             step = SHOW_IN_ONE_GO
         end = start + step
         return cls.query.filter(cls.publish_time <= datetime.now(),
-                                cls.publish_time > (datetime.now() - timedelta(days=7))
+                                cls.publish_time > (datetime.now() - timedelta(days=DAY_POST_OPEN))
                                 ).order_by(Post.id.desc())[start:end]
 
     def is_closed(self):
@@ -169,7 +171,7 @@ class Post(db.Model):
         if step is None:
             step = SHOW_IN_ONE_GO
         end = start + step
-        return db.session.query(cls).filter(cls.publish_time <= datetime.now() - timedelta(days=7),
+        return db.session.query(cls).filter(cls.publish_time <= datetime.now() - timedelta(days=DAY_POST_OPEN),
                                             ~exists().where(and_(cls.id == Submission.post_id,
                                             Submission.won)))[start:end]
 
