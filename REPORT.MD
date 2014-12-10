@@ -35,6 +35,10 @@ Many of the refactorings I performed have removed code from the view functions. 
 
 One such refactoring was done on the search endpoints. The functions that parsed the query string and generated a cleaned up string were pulled out into *helpers.py* and had unit test created for them. The database query was pulled into the Post model with the other methods that return lists of posts, and list comprehensions over large lists of posts obtained by first searching for the terms were replaced by query composition leveraging the power of SQL and SQLalchemy.
 
+####Source control####
+
+During the development of this project, I believe I have used git effectively within the confines of an individual project. Commits have generally been one unit of work, and the commit messages have been descriptive though maybe a bit short. I have also used more advanced features of git. As an example, while developing a feature on its own branch I discovered a bug that I wanted to fix before merging back into master but by accident I committed to the feature branch. I then cherry picked the commit onto master, move the head of the feature branch up to remove the accidental commit, and rebased the feature branch off the new master before merging back in, leaving me with a clean repo history despite my error.
+
 ###Structure###
 ####Code####
 The repository is split into modules that have specific functions, for example the test code and databases can be found in the *tests* module. The structure of the repository has not changed drastically over the development of the application; I settled on this division of code early in the architecture phase and it was sensible enough to not need any major revision. A detailed description of the structure of the repo can be found in the readme file.
