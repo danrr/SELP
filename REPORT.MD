@@ -24,6 +24,14 @@ The main features that I mentioned in the proposal have been implemented and are
 
 
 ###Structure###
+####Code####
+The repository is split into modules that have specific functions, for example the test code and databases can be found in the *tests* module. The structure of the repository has not changed drastically over the development of the application; I settled on this division of code early in the architecture phase and it was sensible enough to not need any major revision. A detailed description of the structure of the repo can be found in the readme file.
+
+The structure is easily adaptable if the application grows beyond what is sensible to put into the current structure. As an example the views file could be split up and turned into a module containing blueprints if many more views are needed, without needing to change much other than the import statements, or more tests can be added by just adding a file in the test folder.
+
+The only part of the app that I feel could pose issues when expanding would be the coffeescript and SCSS files. Splitting these up would require non-trivial changes to scripts that compile them. In the case of SCSS, there is also the complication of not using Compass but a Python library for compilation. This means that many features available in Compass are missing such as vendor prefix mixins or sprite generation, which might trip up someone who has only used SCSS with Compass. It also means that the app is not dependent on any Ruby gems and the extra complexity they would introduce to the setup process without immediate benefits. Not using Compass is a trade-off which in my opinion is worth it for the initial phase of development at least, especially when considering that the styling of the app is built on Bootstrap so the layout of the page can be substantially modified by only adding or removing classes in the templates.
+
+####Database####
 
 <span style="display:block; text-align: center"> 
 ![Diagram of the main components of the database: User, Post and Submission](http://i.imgur.com/phkObpp.png)
