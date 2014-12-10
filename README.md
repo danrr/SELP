@@ -55,5 +55,19 @@ To recompile the static assets, run *source compile_js.sh* for the coffeescript 
 Please find the proposal in the PROPOSAL.md file at the root of this repo.
 
 ###Report###
+For evaluation purposes the databases in prepopulated, as the application is time dependant. The state of a post being derived from the time at which it was published, and as I'm sure you wouldn't want to wait 7 days (or bother hacking about with the time in any way) to fully evaluate my submission, the following users are provided:
 
-Please find the proposal in the REPORT.md file at the root of this repo.
+
+
+<pre>Username | Password
+--------------------
+Erik     | 12345
+Jane     | qwert
+Mike     | asdfg
+John     | zxcvb</pre>
+
+Of course, I encourage you to test out creating a brand new user, new posts, and new submissions.
+
+Please find the report in the REPORT.md file at the root of this repo.
+
+
