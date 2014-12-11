@@ -30,6 +30,8 @@ Although choice is great, it requires a careful reading of the documentation. On
 
 Another poor choice was using node.js to compile the coffeescript. Using node caused me to waste a good deal of time finding a good way to set up an isolated version of it. Although this is the best choice from a feature point of view, and if the project were to grow it might have been needed, there were simpler alternatives that would have covered my limited use, like using python-coffeescript or adding a javascript coffeescript parser from a CDN.
 
+Although I have had issues with coffeescript and the CSS preprocessor, I think that they are useful and over time the initial cost of setting up the requirements is paid back by making writing javascript and CSS much easier.
+
 ####Refactoring and optimization####
 Many of the refactorings I performed have removed code from the view functions. This was done to remove complex database queries or data manipulation and keep the view functions *pure*, which helps with testing and keeps similar code together.
 
