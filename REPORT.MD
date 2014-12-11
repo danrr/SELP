@@ -84,4 +84,15 @@ There are no tests around the coffeescript code as I did not feel there was suff
 
 Besides automated tests I have sanity tested the application manually using the user accounts set up by the *db\_reset.py* script after most pieces of work.
 
+
+###Other deficiencies and assumptions###
+
+There are a number of places in the app where I could have expanded a feature but chose to pursue adding other features or functionality instead. Some examples are: editing or deleting submission, upvoting posts, searching submissions or by other criteria like ingredients. 
+
+There are also usability issues: users can't recover their passwords by email, nor are emails used for anything else.
+
+I believe that all of these things could be easily added by expanding previous features, and as such are not as valuable at this stage.
+
+One major issue that I have chosen to ignore for now but might be difficult to solve in future is that the client and server could be in different time zones and so all the time sensitive code in the Post model might behave unexpectedly, and the countdown on user pages might be wrong. One solution would be send the time zone of the server down with the page in the variables set in the template, and have the user time zone sent to the server when posts are created or updated. I would need to study the documentation on how datetime form fields are sent by POST requests before coming to a definite solution.
+
 ###Conclusion###
