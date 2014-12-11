@@ -72,6 +72,16 @@ The current structure is described entirely in the models file, all tables and m
 The app and test databases being generated and populated automatically make it easy to make changes to the repo locally against a mock database and then deploy the code without losing data on the production database or checking a database file into git. 
 
 ###Test strategy###
+The project currently has two types of automated tests: unit tests around the models and helpers and integration tests against the views. These tests have proved their value as they have helped me discover bugs and mistake both while writing them and later while running them.
 
+Tests are run against a test database which has the same structure as the app database but is not initialised with any values. To better isolate the tests, before every test is run the databased creates the tables required, and after every test all tables in the database are dropped. 
+
+The coverage of the unit tests for models and helpers is very close to 100% due to tests being written alongside the code and I am satisfied with the quality of them. Integration test have a much lower coverage of approximately 50%. A mistake I made in this regard is not writing tests around views till much later, at a point where it felt less like verifying the code works as expected and more like a chore. On the positive side, most views have very little logic inside them, and the most important ones have some test coverage so tests are still likely to find a fault.
+
+With unit testing I have tried to mock out functions and methods outside the scope of the test or with unwanted side-effects (like trying to upload an image to imgur), though I think there is room for improvement in the isolation of some unit tests.
+
+There are no tests around the coffeescript code as I did not feel there was sufficient benefit in adding them at this point. In the future, a testing suite like Jasmine could be added if it is required.
+
+Besides automated tests I have sanity tested the application manually using the user accounts set up by the *db\_reset.py* script after most pieces of work.
 
 ###Conclusion###
