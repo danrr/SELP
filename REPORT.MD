@@ -35,6 +35,8 @@ Many of the refactorings I performed have removed code from the view functions. 
 
 One such refactoring was done on the search endpoints. The functions that parsed the query string and generated a cleaned up string were pulled out into *helpers.py* and had unit test created for them. The database query was pulled into the Post model with the other methods that return lists of posts, and list comprehensions over large lists of posts obtained by first searching for the terms were replaced by query composition leveraging the power of SQL and SQLalchemy.
 
+Another interesting refactoring was applied to the template files to extract the code for displaying posts into a macro usable in all situations where a post would need to be rendered, including when responding to js requests for more posts. The result of this refactoring is perhaps not the best due to many if statements but it serves the purpose and is easier to modify than code in 4 or 5 different templates.
+
 ####Source control####
 
 During the development of this project, I believe I have used git effectively within the confines of an individual project. Commits have generally been one unit of work, and the commit messages have been descriptive though maybe a bit short. I have also used more advanced features of git. As an example, while developing a feature on its own branch I discovered a bug that I wanted to fix before merging back into master but by accident I committed to the feature branch. I then cherry picked the commit onto master, move the head of the feature branch up to remove the accidental commit, and rebased the feature branch off the new master before merging back in, leaving me with a clean repo history despite my error.
